@@ -6,12 +6,15 @@ import Helper from "./utils/Helper";
 import LoginComponent from "./components/Login"
 export const Config = {
   install(Vue, config, router) {
-    const { appId, serverURL, subclasses } = config;
+    const { appId, serverURL, subclasses, javascriptKey } = config;
     Vue.prototype.$appInfo = config;
     colors.setBrand("dark", config.colors.background);
     colors.setBrand("primary", config.colors.primary);
     Parse.initialize(appId);
     Parse.serverURL = serverURL;
+    if (javascriptKey) {
+      Parse.initialize(appId, javascriptKey);
+    }
     Parse.User.allowCustomUserClass(true);
     for (const sub of subclasses) {
       Parse.Object.registerSubclass(sub, ParseVueObject);
