@@ -22,9 +22,10 @@ export const Config = {
     Parse.Object.registerSubclass("_User", ParseUser);
     Object.assign(Vue.prototype, Helper);
     Vue.prototype.$Parse = Parse;
+    Vue.prototype.$currentUser = ParseUser.current();
 
     const fetchIfNeeded = async (refresh, to, next) => {
-      const user = Parse.User.current();
+      const user = ParseUser.current();
       if (!user) {
         return;
       }
@@ -66,7 +67,7 @@ export const Config = {
       const auth = to.meta.requiresAuth;
       await fetchIfNeeded(from.path === "/", to, next);
       Loading.hide();
-      if (!Parse.User.current()) {
+      if (!ParseUser.current()) {
         if (auth) {
           handleRoute("/login", to, next);
         } else {

@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import ParseUser from "../../utils/ParseUserSubclass";
 import { openURL } from "quasar";
 import Parse from "parse";
 export default {
@@ -230,7 +231,7 @@ export default {
         : ["email", "password"];
       this.$validateFields(fieldsToValidate);
       if (this.signup) {
-        let user = new Parse.User();
+        let user = new ParseUser();
         user.set("email", this.email);
         user.set("username", this.email);
         user.set("password", this.password);
@@ -240,10 +241,10 @@ export default {
         this.$router.push({ name: "welcome" });
         return;
       }
-      await this.$resolve(Parse.User.logIn(this.email, this.password));
+      await this.$resolve(ParseUser.logIn(this.email, this.password));
       await this.$fetchIfNeeded(true);
       const getPath = () => {
-        const accType = Parse.User.current().get("accType");
+        const accType = ParseUser.current().get("accType");
         if (!accType) {
           return "welcome";
         }
@@ -252,7 +253,7 @@ export default {
           this.$showError(`Keys not specified for accountType: ${accType}`);
         }
         for (const key of required) {
-          if (!Parse.User.current().get(key)) {
+          if (!ParseUser.current().get(key)) {
             return "welcome";
           }
         }
