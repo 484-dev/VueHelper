@@ -5,13 +5,13 @@
         <div class="row full-width col-grow justify-center items-center">
           <div class="row justify-center">
             <div
-              :style="`height:20vh;width:20vh;background-image: url('${appInfo.appIcon}') !important; background-repeat: no-repeat !important; background-position: center !important;background-size:cover !important;`"
+              :style="`height:20vh;width:20vh;background-image: url('${$appInfo.appIcon}') !important; background-repeat: no-repeat !important; background-position: center !important;background-size:cover !important;`"
             ></div>
             <h1
               class="col-10 text-white q-ma-none text-center text-bold"
               style="font-size: 5em"
             >
-              {{ appInfo.appName }}
+              {{ $appInfo.appName }}
             </h1>
             <h1
               class="col-10 text-white q-ma-none text-center text-bold"
