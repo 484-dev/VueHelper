@@ -207,9 +207,8 @@
 </template>
 
 <script>
-import ParseUser from "../../utils/ParseUserSubclass";
+import ParseUser from "../utils/ParseUserSubclass";
 import { openURL } from "quasar";
-import Parse from "parse";
 export default {
   name: "Login",
   data: function () {
