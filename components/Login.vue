@@ -247,7 +247,7 @@ export default {
         if (!accType) {
           return "welcome";
         }
-        const required = this[`${accType}Keys`];
+        const required = this.requiredKeys[accType];
         if (!required) {
           this.$showError(`Keys not specified for accountType: ${accType}`);
         }
@@ -275,6 +275,9 @@ export default {
     tagline: {
       type: String,
     },
+    requiredKeys: {
+      type: Object,
+    }
   },
 };
 </script>
