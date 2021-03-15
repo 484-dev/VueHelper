@@ -4,7 +4,7 @@ import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
 import Helper from "./utils/Helper";
 import Login from "./components/Login"
-export default {
+module.exports = {
   Login,
   Config: {
     install(Vue, config, router) {
