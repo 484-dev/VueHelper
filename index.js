@@ -2,7 +2,7 @@ import { colors } from "quasar";
 import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
-import Helper from "src/utils/Helper";
+import Helper from "./utils/Helper";
 export default {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses } = config;
