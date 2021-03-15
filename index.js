@@ -22,7 +22,7 @@ export const Config = {
     Parse.Object.registerSubclass("_User", ParseUser);
     Object.assign(Vue.prototype, Helper);
     Vue.prototype.$Parse = Parse;
-    Vue.prototype.$currentUser = ParseUser.current();
+    Vue.prototype.$currentUser = ParseUser.current;
 
     const fetchIfNeeded = async (refresh, to, next) => {
       const user = ParseUser.current();
