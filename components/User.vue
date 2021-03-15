@@ -1,14 +1,17 @@
 <template>
   <div class="user" :class="getDirectionClass(1)">
-    <div :class="getDirectionClass(2,3)">
+    <div :class="getDirectionClass(2,3)" v-if="image">
       <q-img
-        :src="format(userCopy,options,'image','https://placeimg.com/500/300/nature')"
+        :src="image.url && image.url() || image || 'https://placeimg.com/500/300/nature'"
         :ratio="1"
         class="user--image"
       />
     </div>
     <div :class="getDirectionClass(2,8)">
-      
+        <div v-if="before" class="before" :class="(beforeClass || []).join(' ')">{{before}}</div>
+         <h2 v-if="title" class="q-my-none">{{title}}</h2>
+         <h5 v-if="subtitle" class="q-my-none">{{subtitle}}</h5>
+         <slot v-if="$slots.after" name="after"></slot>
     </div>
   </div>
 </template>
@@ -19,14 +22,14 @@ export default {
   methods: {
     getDirectionClass(level, size) {
       const classes = []
-      let highDirection =
+      const highDirection =
         (this.direction || this.options.direction) == 'lr' ||
         (this.direction || this.options.direction) == 'rl'
           ? 'horizontal'
           : 'vertical'
       // Spacing
       // COTES - consider how we could pass sizing (xs, sm, md, lg, xl) in to:
-      let spacing = 'sm'
+      const spacing = 'sm'
       if (spacing && level == 1) {
         classes.push(`q-${highDirection == 'horizontal' ? 'col-' : ''}gutter-${spacing}`)
       }
@@ -34,7 +37,7 @@ export default {
       if (highDirection == 'horizontal') {
         classes.push(level == 1 ? 'row' : 'col')
         if (size && level == 2) {
-          classes.push('col-' + size)
+          classes.push(`col-${  size}`)
         }
       }
       // Vertical
@@ -55,22 +58,13 @@ export default {
       return classes.join(' ')
     }
   },
-  computed: {
-    userCopy: {
-      get () { return this.value },
-      set (value) {
-        this.$emit('input', value)
-      },
-    },
-  },
   props: {
     direction: { type: String },
-    content: {
-      required: false
-    },
-    value: {
-      required: true
-    }
+    image: {type: Object},
+    before: { type: String},
+    beforeClass: { type: String},
+    title: { type: String},
+    subtitle: { type: String},
   }
 }
 </script>
