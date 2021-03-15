@@ -1,4 +1,4 @@
-import { colors } from "quasar";
+import { colors, Loading } from "quasar";
 import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
