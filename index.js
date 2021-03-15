@@ -3,7 +3,7 @@ import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
 import Helper from "./utils/Helper";
-import Login from "./components/Login"
+import LoginComponent from "./components/Login"
 export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses } = config;
@@ -75,4 +75,4 @@ export const Config = {
     });
   },
 };
-export const Login;
+export const Login = LoginComponent;
