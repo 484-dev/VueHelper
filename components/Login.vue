@@ -249,7 +249,7 @@ export default {
         }
         const required = this[`${accType}Keys`];
         if (!required) {
-          this.$showError(`Keys not specified for accountType: ${required}`);
+          this.$showError(`Keys not specified for accountType: ${accType}`);
         }
         for (const key of required) {
           if (!Parse.User.current().get(key)) {
