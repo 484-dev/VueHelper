@@ -7,12 +7,12 @@ export  {default as Login} from "./components/Login"
 export  {default as User} from "./components/User"
 export const Config = {
   install(Vue, config, router) {
-    const { appId, serverURL, subclasses, javascriptKey } = config;
+    const { appId, serverURL, subclasses, javascriptKey, localhost } = config;
     Vue.prototype.$appInfo = config;
     colors.setBrand("dark", config.colors.background);
     colors.setBrand("primary", config.colors.primary);
     Parse.initialize(appId);
-    Parse.serverURL = serverURL;
+    Parse.serverURL = localhost ? 'http://localhost:1337/parse' : serverURL;
     if (javascriptKey) {
       Parse.initialize(appId, javascriptKey);
     }

@@ -15,10 +15,12 @@ class ParseVueObject extends Parse.Object {
     }
   }
   pointer(className) {
-    return Parse.Object.fromJSON({
-      className: className || this.className,
+    const obj = Parse.Object.fromJSON({
+      className: 'newTestClassName',
       objectId: this.id
-    })
+    });
+    obj.className = className || this.className;
+    return obj;
   }
   set(key, value) {
     super.set(key, value);
