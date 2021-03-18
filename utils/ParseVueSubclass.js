@@ -14,6 +14,10 @@ class ParseVueObject extends Parse.Object {
       this[key] = data[key];
     }
   }
+  set(key, value) {
+    super.set(key, value);
+    this[key] = value;
+  }
   async save() {
     const internal = ['id', 'className', 'createdAt', 'updatedAt', 'ACL'];
     for (const key in this) {
