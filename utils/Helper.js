@@ -25,7 +25,7 @@ export default {
       this.$showError(e);
     }
   },
-  $showError(error) {
+  $showError(error, throwErr) {
     if (!error) {
       return;
     }
@@ -37,6 +37,9 @@ export default {
       type: "error",
       duration: 2000,
     });
+    if (throwErr !== null) {
+      return;
+    }
     throw error;
   },
   $showMessage(message) {
