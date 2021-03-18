@@ -14,6 +14,12 @@ class ParseVueObject extends Parse.Object {
       this[key] = data[key];
     }
   }
+  pointer() {
+    return Parse.Object.fromJSON({
+      className: this.className,
+      objectId: this.id
+    })
+  }
   set(key, value) {
     super.set(key, value);
     this[key] = value;
