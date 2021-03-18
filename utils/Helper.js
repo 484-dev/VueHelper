@@ -37,8 +37,7 @@ export default {
       type: "error",
       duration: 2000,
     });
-    console.log('throwErr',throwErr)
-    if (throwErr !== null) {
+    if (throwErr !== undefined) {
       return;
     }
     throw error;
