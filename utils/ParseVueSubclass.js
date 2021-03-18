@@ -14,9 +14,9 @@ class ParseVueObject extends Parse.Object {
       this[key] = data[key];
     }
   }
-  pointer() {
+  pointer(className) {
     return Parse.Object.fromJSON({
-      className: this.className,
+      className: className || this.className,
       objectId: this.id
     })
   }
