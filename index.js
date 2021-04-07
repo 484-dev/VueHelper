@@ -54,6 +54,9 @@ export const Config = {
           handleRoute("/login", to, next);
         }
       }
+      if (config.handleLoaded) {
+        config.handleLoaded();
+      }
     };
     Vue.prototype.$fetchIfNeeded = fetchIfNeeded;
     const handleRoute = (destination, to, next) => {
