@@ -55,7 +55,7 @@ export const Config = {
         }
       }
       if (config.handleLoaded) {
-        config.handleLoaded();
+        config.handleLoaded(Parse);
       }
     };
     Vue.prototype.$fetchIfNeeded = fetchIfNeeded;
