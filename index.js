@@ -61,6 +61,7 @@ export const Config = {
     };
     Vue.prototype.$fetchIfNeeded = fetchIfNeeded;
     const handleRoute = (destination, to, next) => {
+      console.log('routers->',destination, to);
       if (to.path === destination) {
         next();
         return;
