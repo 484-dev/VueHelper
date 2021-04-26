@@ -72,6 +72,24 @@ export default {
   $timeout(duration) {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
+  $getFile(fileURL) {
+    return new Promise((resolve, reject) => {
+      window.resolveLocalFileSystemURL(
+        fileURL,
+        fileEntry => {
+          fileEntry.file(
+            file => {
+              resolve(file);
+            },
+            err => {
+              reject(err);
+            }
+          );
+        },
+        error => reject(error)
+      );
+    });
+  },
   $getLocation() {
     if (navigator) {
       return new Promise((resolve, reject) => {
