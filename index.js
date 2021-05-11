@@ -25,7 +25,7 @@ export const Config = {
     Vue.prototype.$Parse = Parse;
     Vue.prototype.$currentUser = ParseUser.current;
 
-    const fetchIfNeeded = async (refresh, to, next) => {
+    const fetchIfNeeded = async (refresh, to = {}, next = () => {}) => {
       const user = ParseUser.current();
       if (!user) {
         return;
