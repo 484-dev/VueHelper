@@ -1,7 +1,12 @@
 import { Parse } from 'parse';
 class ParseVueObject extends Parse.Object {
-  constructor(className) {
+  constructor(className, json) {
     super(className);
+    if (json) {
+      for (const key in json) {
+        this.set(key, json[key]);
+      }
+    }
     this.loadData();
   }
   loadData() {
