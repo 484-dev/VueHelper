@@ -1,3 +1,4 @@
+import ParseVueObject from "./ParseVueSubclass";
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -153,4 +154,7 @@ export default {
       return `${day} ${month}${year}`;
     }
   },
+  $ParseVueObject(className) {
+    return new ParseVueObject(className)
+  }
 };
