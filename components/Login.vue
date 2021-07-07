@@ -74,7 +74,7 @@
               color="white"
               text-color="black"
               label="Let's go"
-              class="col-10 q-ma-sm"
+              class="col-10 q-ma-sm q-mb-md"
               @click="tab = 'options'"
             ></q-btn>
           </div>
@@ -82,7 +82,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="options" class="column full-height bg-dark">
-        <div class="row full-width col-grow justify-center items-center">
+        <div class="row full-width col-grow">
           <div class="row full-width justify-center">
             <q-btn
               class="absolute-top-left q-mt-lg q-ml-md"
