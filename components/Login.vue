@@ -54,7 +54,7 @@
 
       <q-tab-panel
         name="onboarding"
-        class="column full-height bg-primary"
+        class="column full-height bg-primary q-pa-none"
         v-if="$slots.onboarding"
       >
         <div class="row full-width col-grow justify-center items-center">
@@ -62,10 +62,11 @@
             <q-btn
               class="absolute-top-left q-mt-lg q-ml-md"
               unelevated
+              padding="0px"
               icon="arrow_back"
               text-color="white"
               @click="tab = 'welcome'"
-            ></q-btn>
+            />
             <slot name="onboarding"></slot>
             <q-btn
               unelevated
@@ -87,9 +88,10 @@
               class="absolute-top-left q-mt-lg q-ml-md"
               unelevated
               icon="arrow_back"
+              padding="0px"
               text-color="white"
               @click="tab = 'welcome'"
-            ></q-btn>
+            />
             <q-btn
               unelevated
               no-caps
@@ -129,7 +131,7 @@
               icon="arrow_back"
               text-color="white"
               @click="(tab = 'options'), (email = ''), (password = '')"
-            ></q-btn>
+            />
             <h3
               class="col-10 text-white q-ma-none text-center text-bold"
               style="font-size: 2em"
