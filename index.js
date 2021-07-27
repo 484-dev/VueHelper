@@ -22,6 +22,8 @@ export const Config = {
     }
     Parse.Object.registerSubclass("_User", ParseUser);
     Object.assign(Vue.prototype, Helper);
+
+    Vue.prototype.$ParseUser = ParseUser;
     Vue.prototype.$ParseObject = ParseVueObject;
     Vue.prototype.$Parse = Parse;
     Vue.prototype.$currentUser = ParseUser.current;
