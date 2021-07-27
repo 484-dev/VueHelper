@@ -131,7 +131,7 @@ export default {
               reject("No file selected.");
               return;
             }
-            resolve(input.value);
+            resolve(input.files[0]);
             document.body.onfocus = null;
           };
           input.click();
