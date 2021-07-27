@@ -1,5 +1,5 @@
 import ParseVueObject from "./ParseVueSubclass";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -28,6 +28,7 @@ export default {
     }
   },
   $showError(error, throwErr) {
+    this.$q.loading.hide();
     if (!error) {
       return;
     }
@@ -112,7 +113,7 @@ export default {
       },
     };
   },
-  async $getPicture({edit = true, camera = false}) {
+  async $getPicture({ edit = true, camera = false } = {}) {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
@@ -126,7 +127,20 @@ export default {
         } else {
           navigator.camera.getPicture(
             (fileLocation) => {
-              resolve(fileLocation);
+              (async () => {
+                try {
+                  const file = await this.$getFile(fileLocation);
+                  const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 800,
+                    useWebWorker: false,
+                  };
+                  const compressedFile = await imageCompression(file, options);
+                  resolve(compressedFile);
+                } catch (e) {
+                  reject(e);
+                }
+              })();
             },
             (error) => {
               reject(error);
@@ -134,7 +148,9 @@ export default {
             {
               quality: 100,
               encodingType: navigator.camera.EncodingType.JPEG,
-              sourceType: camera ? navigator.camera.PictureSourceType.CAMERA : navigator.camera.PictureSourceType.PHOTOLIBRARY,
+              sourceType: camera
+                ? navigator.camera.PictureSourceType.CAMERA
+                : navigator.camera.PictureSourceType.PHOTOLIBRARY,
               mediaType: navigator.camera.MediaType.PICTURE,
               allowEdit: edit,
             }
@@ -142,19 +158,10 @@ export default {
         }
       });
     };
-    this.$q.loading.show();
-    const fileLocation = await getImg();
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 800,
-      useWebWorker: false,
-    };
     try {
-      const file = await this.$getFile(fileLocation);
-      const compressedFile = await imageCompression(file, options);
-      const decodedImage = await imageCompression.getDataUrlFromFile(
-        compressedFile
-      );
+      this.$q.loading.show();
+      const file = await getImg();
+      const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
       return decodedImage;
     } catch (e) {
