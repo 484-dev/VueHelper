@@ -1,4 +1,4 @@
-import { colors, Loading } from "quasar";
+import { setCssVar, Loading } from "quasar";
 import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
@@ -9,8 +9,8 @@ export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses, javascriptKey, localhost } = config;
     Vue.config.globalProperties.$appInfo = config;
-    colors.setBrand("dark", config.colors.background);
-    colors.setBrand("primary", config.colors.primary);
+    setCssVar("dark", config.colors.background);
+    setCssVar("primary", config.colors.primary);
     Parse.initialize(appId);
     Parse.serverURL = localhost ? 'http://localhost:1337/parse' : serverURL;
     if (javascriptKey) {
@@ -54,11 +54,13 @@ export const Config = {
         if (e.code == 209) {
           await Parse.User.logOut();
           handleRoute("/login", to, next);
+          return;
         }
       }
       if (config.handleLoaded) {
         const name = config.handleLoaded(Parse);
         handleRoute({name}, to, next);
+        return;
       }
     };
     const handleRoute = (destination, to, next) => {
@@ -71,7 +73,7 @@ export const Config = {
     router.beforeEach(async (to, from, next) => {
       Loading.show();
       const auth = to.meta.requiresAuth;
-      await fetchIfNeeded(from.path === "/", to, next);
+      await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to, next);
       Loading.hide();
       if (!ParseUser.current()) {
         if (auth) {
