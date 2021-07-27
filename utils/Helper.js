@@ -77,17 +77,17 @@ export default {
     return new Promise((resolve, reject) => {
       window.resolveLocalFileSystemURL(
         fileURL,
-        fileEntry => {
+        (fileEntry) => {
           fileEntry.file(
-            file => {
+            (file) => {
               resolve(file);
             },
-            err => {
+            (err) => {
               reject(err);
             }
           );
         },
-        error => reject(error)
+        (error) => reject(error)
       );
     });
   },
@@ -110,6 +110,41 @@ export default {
         longitude: 144.963058,
       },
     };
+  },
+  async $getPicture() {
+    navigator.camera.getPicture(
+      (fileLocation) => {
+        (async () => {
+          this.$q.loading.show();
+          const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 800,
+            useWebWorker: false,
+          };
+          try {
+            const file = await this.$getFile(fileLocation);
+            const compressedFile = await imageCompression(file, options);
+            const decodedImage = await imageCompression.getDataUrlFromFile(
+              compressedFile
+            );
+            this.$q.loading.hide();
+            return decodedImage;
+          } catch (e) {
+            this.$showError(e);
+          }
+        })();
+      },
+      (error) => {
+        this.$showError(this, error);
+      },
+      {
+        quality: 100,
+        encodingType: navigator.camera.EncodingType.JPEG,
+        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
+        mediaType: navigator.camera.MediaType.PICTURE,
+        allowEdit: true,
+      }
+    );
   },
   $filterDropdown(val, update, data, filter) {
     if (!data.all) {
@@ -155,6 +190,6 @@ export default {
     }
   },
   $ParseVueObject(className) {
-    return new ParseVueObject(className)
-  }
+    return new ParseVueObject(className);
+  },
 };
