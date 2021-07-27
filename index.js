@@ -8,7 +8,7 @@ export  {default as User} from "./components/User"
 export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses, javascriptKey, localhost } = config;
-    Vue.prototype.$appInfo = config;
+    Vue.config.globalProperties.$appInfo = config;
     colors.setBrand("dark", config.colors.background);
     colors.setBrand("primary", config.colors.primary);
     Parse.initialize(appId);
@@ -21,14 +21,13 @@ export const Config = {
       Parse.Object.registerSubclass(sub, ParseVueObject);
     }
     Parse.Object.registerSubclass("_User", ParseUser);
-    Object.assign(Vue.prototype, Helper);
+    Object.assign(Vue.config.globalProperties, Helper);
 
-    Vue.prototype.$ParseUser = ParseUser;
-    Vue.prototype.$ParseObject = ParseVueObject;
-    Vue.prototype.$Parse = Parse;
-    Vue.prototype.$currentUser = ParseUser.current;
-
-    const fetchIfNeeded = async (refresh, to = {}, next = () => {}) => {
+    Vue.config.globalProperties.$ParseUser = ParseUser;
+    Vue.config.globalProperties.$ParseObject = ParseVueObject;
+    Vue.config.globalProperties.$Parse = Parse;
+    Vue.config.globalProperties.$currentUser = ParseUser.current;
+    Vue.config.globalProperties.$fetchIfNeeded = async (refresh, to = {}, next = () => {}) => {
       const user = ParseUser.current();
       if (!user) {
         return;
@@ -62,7 +61,6 @@ export const Config = {
         handleRoute({name}, to, next);
       }
     };
-    Vue.prototype.$fetchIfNeeded = fetchIfNeeded;
     const handleRoute = (destination, to, next) => {
       if (to.path === destination || to.name === destination || destination.name === to.name) {
         next();
