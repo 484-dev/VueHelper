@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/484-dev/VueHelper/issues"
   },
-  "homepage": "https://github.com/484-dev/VueHelper#readme"
+  "homepage": "https://github.com/484-dev/VueHelper#readme",
+  "dependencies": {
+    "browser-image-compression": "^1.0.14",
+    "parse": "^3.3.0"
+  }
 }

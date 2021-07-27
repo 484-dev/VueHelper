@@ -1,4 +1,5 @@
 import ParseVueObject from "./ParseVueSubclass";
+import imageCompression from 'browser-image-compression';
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -111,40 +112,54 @@ export default {
       },
     };
   },
-  async $getPicture() {
-    navigator.camera.getPicture(
-      (fileLocation) => {
-        (async () => {
-          this.$q.loading.show();
-          const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 800,
-            useWebWorker: false,
+  async $getPicture({edit = true, camera = false}) {
+    const getImg = () => {
+      return new Promise((resolve, reject) => {
+        if (!navigator.camera) {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.onchange = (e) => {
+            const file = e.target.files[0];
+            resolve(file);
           };
-          try {
-            const file = await this.$getFile(fileLocation);
-            const compressedFile = await imageCompression(file, options);
-            const decodedImage = await imageCompression.getDataUrlFromFile(
-              compressedFile
-            );
-            this.$q.loading.hide();
-            return decodedImage;
-          } catch (e) {
-            this.$showError(e);
-          }
-        })();
-      },
-      (error) => {
-        this.$showError(this, error);
-      },
-      {
-        quality: 100,
-        encodingType: navigator.camera.EncodingType.JPEG,
-        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
-        mediaType: navigator.camera.MediaType.PICTURE,
-        allowEdit: true,
-      }
-    );
+          input.click();
+        } else {
+          navigator.camera.getPicture(
+            (fileLocation) => {
+              resolve(fileLocation);
+            },
+            (error) => {
+              reject(error);
+            },
+            {
+              quality: 100,
+              encodingType: navigator.camera.EncodingType.JPEG,
+              sourceType: camera ? navigator.camera.PictureSourceType.CAMERA : navigator.camera.PictureSourceType.PHOTOLIBRARY,
+              mediaType: navigator.camera.MediaType.PICTURE,
+              allowEdit: edit,
+            }
+          );
+        }
+      });
+    };
+    this.$q.loading.show();
+    const fileLocation = await getImg();
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 800,
+      useWebWorker: false,
+    };
+    try {
+      const file = await this.$getFile(fileLocation);
+      const compressedFile = await imageCompression(file, options);
+      const decodedImage = await imageCompression.getDataUrlFromFile(
+        compressedFile
+      );
+      this.$q.loading.hide();
+      return decodedImage;
+    } catch (e) {
+      this.$showError(e);
+    }
   },
   $filterDropdown(val, update, data, filter) {
     if (!data.all) {
