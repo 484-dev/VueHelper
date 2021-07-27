@@ -119,9 +119,20 @@ export default {
         if (!navigator.camera) {
           const input = document.createElement("input");
           input.type = "file";
-          input.onchange = (e) => {
-            const file = e.target.files[0];
-            resolve(file);
+
+          input.onclick = () => {
+            document.body.onfocus = () => {
+              setTimeout(checkOnCancel, 100);
+            };
+          };
+
+          const checkOnCancel = () => {
+            if (input.value.length === 0) {
+              reject("No file selected.");
+              return;
+            }
+            resolve(input.value);
+            document.body.onfocus = null;
           };
           input.click();
         } else {
