@@ -30,6 +30,10 @@ class ParseUser extends Parse.User {
     }
     await super.save();
   }
+  revert() {
+    super.revert();
+    this.loadData();
+  }
   _finishFetch(serverData) {
     super._finishFetch(serverData);
     this.loadData();

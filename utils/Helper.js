@@ -94,24 +94,34 @@ export default {
     });
   },
   $getLocation() {
-    if (navigator) {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            resolve(position);
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-      });
-    }
-    return {
+    const defaultPos = {
       coords: {
         latitude: -37.813629,
         longitude: 144.963058,
       },
-    };
+    }
+    if (navigator.geolocation) {
+      return new Promise((resolve, reject) => {
+        let resolved = false;
+        setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            resolve(defaultPos)
+          }
+        }, 5000)
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve(position);
+            resolved = true;
+          },
+          (error) => {
+            reject(error);
+            resolved = true;
+          }
+        );
+      });
+    }
+    return defaultPos;
   },
   async $getPicture({ edit = true, camera = false } = {}) {
     const getImg = () => {
