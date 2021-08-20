@@ -132,7 +132,7 @@ export default {
 
           input.onclick = () => {
             document.body.onfocus = () => {
-              setTimeout(checkOnCancel, 100);
+              setTimeout(checkOnCancel, 500);
             };
           };
 
