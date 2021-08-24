@@ -3,8 +3,6 @@ import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
 import Helper from "./utils/Helper";
-export  {default as Login} from "./components/Login"
-export  {default as User} from "./components/User"
 export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses, javascriptKey, localhost } = config;
