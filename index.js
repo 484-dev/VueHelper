@@ -31,15 +31,18 @@ export const Config = {
         return;
       }
       const toFetch = [];
+      if (refresh) {
+        toFetch.push(user);
+      }
       const checkIfFetch = (obj) => {
         if (!obj.isDataAvailable(obj) || refresh) {
-          toFetch.push(obj.fetch());
+          toFetch.push(obj);
         }
       };
       checkIfFetch(user);
       for (const key in user.attributes) {
         const val = user.get(key);
-        if (val && val.id) {
+        if (val && val.fetch) {
           checkIfFetch(val);
         }
       }
@@ -47,9 +50,9 @@ export const Config = {
         return;
       }
       try {
-        await Promise.all(toFetch);
+        await Promise.all(toFetch.map(obj => obj.fetch()));
       } catch (e) {
-        if (e.code == 209) {
+        if (e.code === 209 || e.code === 206) {
           await Parse.User.logOut();
           handleRoute("/login", to, next);
           return;

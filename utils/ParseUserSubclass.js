@@ -5,7 +5,7 @@ class ParseUser extends Parse.User {
     this.loadData();
   }
   loadData() {
-    const internal = ['id', 'className', 'createdAt', 'updatedAt', 'ACL'];
+    const internal = ['id', 'objectId', 'className', 'createdAt', 'updatedAt', 'ACL', 'sessionToken'];
     const data = this.attributes;
     for (const key in data) {
       if (internal.includes(key)) {
@@ -19,7 +19,7 @@ class ParseUser extends Parse.User {
     this[key] = value;
   }
   async save() {
-    const internal = ['id', 'className', 'createdAt', 'updatedAt', 'ACL'];
+    const internal = ['id', 'objectId', 'className', 'createdAt', 'updatedAt', 'ACL', 'sessionToken'];
     for (const key in this) {
       if (internal.includes(key)) {
         continue;
