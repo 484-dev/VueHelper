@@ -73,7 +73,7 @@ export default {
           try {
             await Parse.User.logOut();
           } catch (e) {
-            await logout();
+            /* */
           }
           location.reload();
         }
