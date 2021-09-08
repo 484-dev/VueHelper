@@ -39,6 +39,9 @@ export default {
       message: error,
       type: "error",
       duration: 2000,
+      actions: [
+        { icon: 'close', color: 'white', handler: () => {} }
+      ]
     });
     if (throwErr !== undefined) {
       return;
@@ -56,6 +59,9 @@ export default {
       message,
       type: "error",
       duration: 2000,
+      actions: [
+        { icon: 'close', color: 'white', handler: () => {} }
+      ]
     });
   },
   async $resolve(promise) {
