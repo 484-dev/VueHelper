@@ -68,6 +68,17 @@ export default {
       this.$q.loading.hide();
       return result;
     } catch (e) {
+      if (e.code === 206 || e.code === 209) {
+        const logout = async () => {
+          try {
+            await Parse.User.logOut();
+          } catch (e) {
+            await logout();
+          }
+          location.reload();
+        }
+        await logout();
+      }
       this.$q.loading.hide();
       this.$showError(e);
     }
