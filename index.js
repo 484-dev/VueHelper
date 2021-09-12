@@ -36,6 +36,9 @@ export const Config = {
         toFetch.push(user);
       }
       const checkIfFetch = (obj) => {
+        if (!obj || !obj.fetch || !obj.isDataAvailable) {
+          return;
+        }
         if (!obj.isDataAvailable(obj) || refresh) {
           toFetch.push(obj);
         }
@@ -43,9 +46,7 @@ export const Config = {
       checkIfFetch(user);
       for (const key in user.attributes) {
         const val = user.get(key);
-        if (val && val.fetch) {
-          checkIfFetch(val);
-        }
+        checkIfFetch(val);
       }
       if (toFetch.length == 0) {
         return false;
