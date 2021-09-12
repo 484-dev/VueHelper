@@ -44,7 +44,7 @@ export const Config = {
         }
       };
       checkIfFetch(user);
-      for (const key in user.attributes) {
+      for (const key in user?.attributes) {
         const val = user.get(key);
         checkIfFetch(val);
       }
