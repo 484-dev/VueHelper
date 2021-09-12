@@ -25,10 +25,11 @@ export const Config = {
     Vue.config.globalProperties.$ParseObject = ParseVueObject;
     Vue.config.globalProperties.$Parse = Parse;
     Vue.config.globalProperties.$currentUser = ParseUser.current;
-    Vue.config.globalProperties.$fetchIfNeeded = async (refresh, to = {}, next = () => {}) => {
+    Vue.config.globalProperties.$fetchIfNeeded = async (refresh, to = {}) => {
       const user = ParseUser.current();
-      if (!user) {
-        return;
+      const auth = to?.meta?.requiresAuth;
+      if (!user && auth) {
+        return '/login';
       }
       const toFetch = [];
       if (refresh) {
@@ -47,44 +48,38 @@ export const Config = {
         }
       }
       if (toFetch.length == 0) {
-        return;
+        return false;
       }
       try {
         await Promise.all(toFetch.map(obj => obj.fetch()));
       } catch (e) {
         if (e.code === 209 || e.code === 206) {
           await Parse.User.logOut();
-          handleRoute("/login", to, next);
-          return;
+          return '/login';
         }
       }
       if (config.handleLoaded) {
         const name = config.handleLoaded(Parse);
-        handleRoute({name}, to, next);
-        return;
+        return name;
       }
     };
     const handleRoute = (destination, to, next) => {
       if (to.path === destination || to.name === destination || destination.name === to.name) {
         next();
-        return;
+        return true;
       }
       next(destination);
+      return true;
     };
     router.beforeEach(async (to, from, next) => {
       Loading.show();
-      const auth = to.meta.requiresAuth;
-      await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to, next);
+      const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
       Loading.hide();
-      if (!ParseUser.current()) {
-        if (auth) {
-          handleRoute("/login", to, next);
-        } else {
-          next();
-        }
+      if (route === false) {
+        next();
         return;
       }
-      next();
+      handleRoute(route, to, next);
     });
   },
 };
