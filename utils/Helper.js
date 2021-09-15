@@ -94,6 +94,9 @@ export default {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
   $getFile(fileURL) {
+    if (Platform.is.android && !fileURL.includes('file://')) {
+      fileURL = `file://${fileURL}`
+    }
     return new Promise((resolve, reject) => {
       window.resolveLocalFileSystemURL(
         fileURL,
@@ -107,7 +110,7 @@ export default {
             }
           );
         },
-        (error) => reject(error)
+        error => reject(error)
       );
     });
   },
@@ -168,7 +171,7 @@ export default {
             (fileLocation) => {
               (async () => {
                 try {
-                  const file = await this.$getFile(fileLocation);
+                  const file = await imageCompression.getFilefromDataUrl(`data:image/png;base64,${fileLocation}`, 'image.jpg');
                   const options = {
                     maxSizeMB: 1,
                     maxWidthOrHeight: 800,
@@ -176,8 +179,8 @@ export default {
                   };
                   const compressedFile = await imageCompression(file, options);
                   resolve(compressedFile);
-                } catch (e) {
-                  reject(e);
+                } catch (error) {
+                  reject(error);
                 }
               })();
             },
@@ -192,6 +195,7 @@ export default {
                 : navigator.camera.PictureSourceType.PHOTOLIBRARY,
               mediaType: navigator.camera.MediaType.PICTURE,
               allowEdit: Platform.is.android ? false : edit,
+              destinationType: Camera.DestinationType.DATA_URL,
             }
           );
         }
