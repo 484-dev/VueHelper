@@ -1,11 +1,10 @@
 import { setCssVar, Loading } from "quasar";
-import { Parse } from "parse";
 import ParseVueObject from "./utils/ParseVueSubclass";
 import ParseUser from "./utils/ParseUserSubclass";
 import Helper from "./utils/Helper";
 export const Config = {
   install(Vue, config, router) {
-    const { appId, serverURL, subclasses, javascriptKey, localhost } = config;
+    const { appId, serverURL, subclasses, javascriptKey, localhost, Parse } = config;
     Vue.config.globalProperties.$appInfo = config;
     setCssVar("dark", config.colors.background);
     setCssVar("primary", config.colors.primary);
