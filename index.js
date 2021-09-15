@@ -27,7 +27,7 @@ export const Config = {
     Vue.config.globalProperties.$currentUser = ParseUser.current;
     Vue.config.globalProperties.$fetchIfNeeded = async (refresh, to = {}) => {
       const user = ParseUser.current();
-      const auth = to?.meta?.requiresAuth;
+      const auth = to && to.meta && to.meta.requiresAuth;
       if (!user && auth) {
         return '/login';
       }
@@ -44,7 +44,7 @@ export const Config = {
         }
       };
       checkIfFetch(user);
-      for (const key in user?.attributes) {
+      for (const key in (user || {}).attributes) {
         const val = user.get(key);
         checkIfFetch(val);
       }
