@@ -1,5 +1,6 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
+import { Platform } from "quasar";
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -190,7 +191,7 @@ export default {
                 ? navigator.camera.PictureSourceType.CAMERA
                 : navigator.camera.PictureSourceType.PHOTOLIBRARY,
               mediaType: navigator.camera.MediaType.PICTURE,
-              allowEdit: edit,
+              allowEdit: Platform.is.android ? false : edit,
             }
           );
         }
