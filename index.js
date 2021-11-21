@@ -72,14 +72,19 @@ export const Config = {
       return true;
     };
     router.beforeEach(async (to, from, next) => {
-      Loading.show();
-      const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
-      Loading.hide();
-      if (route === false) {
+      try {
+        Loading.show();
+        const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
+        Loading.hide();
+        if (route === false) {
+          next();
+          return;
+        }
+        handleRoute(route, to, next);
+      } catch (e) {
         next();
-        return;
+        Loading.hide();
       }
-      handleRoute(route, to, next);
     });
   },
 };
