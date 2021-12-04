@@ -1,6 +1,6 @@
-import ParseVueObject from "./ParseVueSubclass";
-import imageCompression from "browser-image-compression";
-import { Platform } from "quasar";
+import ParseVueObject from './ParseVueSubclass';
+import imageCompression from 'browser-image-compression';
+import { Platform } from 'quasar';
 import { Parse } from 'parse';
 export default {
   $validateFields(...fields) {
@@ -10,7 +10,7 @@ export default {
     try {
       let allowed = true;
       if (!this.$refs) {
-        throw new Error("Please set refs.");
+        throw new Error('Please set refs.');
       }
       for (const field of fields) {
         const fd = this.$refs[field];
@@ -23,7 +23,7 @@ export default {
         }
       }
       if (!allowed) {
-        throw new Error("Could not validate fields.");
+        throw new Error('Could not validate fields.');
       }
     } catch (e) {
       this.$showError(e);
@@ -39,11 +39,9 @@ export default {
     }
     this.$q.notify({
       message: error,
-      type: "error",
+      type: 'error',
       duration: 2000,
-      actions: [
-        { icon: 'close', color: 'white', handler: () => {} }
-      ]
+      actions: [{ icon: 'close', color: 'white', handler: () => {} }],
     });
     if (throwErr !== undefined) {
       return;
@@ -59,16 +57,14 @@ export default {
     }
     this.$q.notify({
       message,
-      type: "error",
+      type: 'error',
       duration: 2000,
-      actions: [
-        { icon: 'close', color: 'white', handler: () => {} }
-      ]
+      actions: [{ icon: 'close', color: 'white', handler: () => {} }],
     });
   },
   async $resolve(promise) {
     if (!promise) {
-      throw new Error("Please pass a promise.");
+      throw new Error('Please pass a promise.');
     }
     this.$q.loading.show();
     try {
@@ -84,7 +80,7 @@ export default {
             /* */
           }
           location.reload();
-        }
+        };
         await logout();
       }
       this.$q.loading.hide();
@@ -96,7 +92,7 @@ export default {
   },
   $getFile(fileURL) {
     if (Platform.is.android && !fileURL.includes('file://')) {
-      fileURL = `file://${fileURL}`
+      fileURL = `file://${fileURL}`;
     }
     return new Promise((resolve, reject) => {
       window.resolveLocalFileSystemURL(
@@ -111,30 +107,28 @@ export default {
             }
           );
         },
-        error => reject(error)
+        (error) => reject(error)
       );
     });
   },
   $getLocation() {
-    const defaultPos = {
-      coords: {
-        latitude: -37.813629,
-        longitude: 144.963058,
-      },
-    }
+    const defaultPos = new Parse.GeoPoint({
+      latitude: -37.813629,
+      longitude: 144.963058,
+    });
     if (navigator.geolocation) {
       return new Promise((resolve, reject) => {
         let resolved = false;
         setTimeout(() => {
           if (!resolved) {
             resolved = true;
-            resolve(defaultPos)
+            resolve(defaultPos);
           }
-        }, 5000)
+        }, 5000);
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            const {latitude, longitude} = position.coords;
-            resolve(new Parse.GeoPoint({latitude, longitude}));
+            const { latitude, longitude } = position.coords;
+            resolve(new Parse.GeoPoint({ latitude, longitude }));
             resolved = true;
           },
           (error) => {
@@ -150,8 +144,8 @@ export default {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
-          const input = document.createElement("input");
-          input.type = "file";
+          const input = document.createElement('input');
+          input.type = 'file';
 
           input.onclick = () => {
             document.body.onfocus = () => {
@@ -161,7 +155,7 @@ export default {
 
           const checkOnCancel = () => {
             if (input.value.length === 0) {
-              reject("No file selected.");
+              reject('No file selected.');
               return;
             }
             resolve(input.files[0]);
@@ -173,7 +167,10 @@ export default {
             (fileLocation) => {
               (async () => {
                 try {
-                  const file = await imageCompression.getFilefromDataUrl(`data:image/png;base64,${fileLocation}`, 'image.jpg');
+                  const file = await imageCompression.getFilefromDataUrl(
+                    `data:image/png;base64,${fileLocation}`,
+                    'image.jpg'
+                  );
                   const options = {
                     maxSizeMB: 1,
                     maxWidthOrHeight: 800,
@@ -198,7 +195,7 @@ export default {
               mediaType: navigator.camera.MediaType.PICTURE,
               allowEdit: Platform.is.android ? false : edit,
               destinationType: Camera.DestinationType.DATA_URL,
-              correctOrientation: true
+              correctOrientation: true,
             }
           );
         }
@@ -218,7 +215,7 @@ export default {
     if (!data.all) {
       data.all = Object.assign([], data.filter);
     }
-    if (val === "") {
+    if (val === '') {
       update(() => {
         data.filter = Object.assign([], data.all);
       });
@@ -236,7 +233,7 @@ export default {
     const now = new Date();
     const secondsPast = (now.getTime() - timeStamp) / 1000;
     if (secondsPast < 60) {
-      return "just now";
+      return 'just now';
     }
     if (secondsPast < 3600) {
       return `${parseInt(secondsPast / 60)}m`;
@@ -249,10 +246,10 @@ export default {
       const month = timeStamp
         .toDateString()
         .match(/ [a-zA-Z]*/)[0]
-        .replace(" ", "");
+        .replace(' ', '');
       const year =
         timeStamp.getFullYear() == now.getFullYear()
-          ? ""
+          ? ''
           : ` ${timeStamp.getFullYear()}`;
       return `${day} ${month}${year}`;
     }
