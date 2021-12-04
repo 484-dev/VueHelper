@@ -1,6 +1,7 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
 import { Platform } from "quasar";
+import { Parse } from 'parse';
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
