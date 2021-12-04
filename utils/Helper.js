@@ -132,7 +132,8 @@ export default {
         }, 5000)
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            resolve(position);
+            const {latitude, longitude} = position.coords;
+            resolve(new Parse.GeoPoint({latitude, longitude}));
             resolved = true;
           },
           (error) => {
