@@ -196,6 +196,7 @@ export default {
               mediaType: navigator.camera.MediaType.PICTURE,
               allowEdit: Platform.is.android ? false : edit,
               destinationType: Camera.DestinationType.DATA_URL,
+              correctOrientation: true
             }
           );
         }
