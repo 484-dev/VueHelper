@@ -54,7 +54,11 @@ export const Config = {
         await Promise.all(toFetch.map(obj => obj.fetch()));
       } catch (e) {
         if (e.code === 209 || e.code === 206) {
-          await Parse.User.logOut();
+          try {
+            await Parse.User.logOut();
+          } catch (e) {
+            /* */
+          }
           return '/login';
         }
       }
