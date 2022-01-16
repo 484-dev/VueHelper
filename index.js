@@ -35,7 +35,8 @@ export const Config = {
         toFetch.push(user);
       }
       const checkIfFetch = (obj) => {
-        if (!obj || !obj.fetch || !obj.isDataAvailable) {
+        const ids = toFetch.map(obj => obj.id);
+        if (!obj || !obj.fetch || !obj.isDataAvailable || ids.includes(obj.id)) {
           return;
         }
         if (!obj.isDataAvailable(obj) || refresh) {
