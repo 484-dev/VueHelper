@@ -69,7 +69,7 @@ export const Config = {
       }
     };
     const handleRoute = (destination, to, next) => {
-      if (to.path === destination || to.name === destination || destination.name === to.name) {
+      if ((to.path === destination || to.name === destination) || (destination.name && destination.name === to.name)) {
         next();
         return true;
       }
