@@ -254,7 +254,36 @@ export default {
       return `${day} ${month}${year}`;
     }
   },
-  $ParseVueObject(className) {
-    return new ParseVueObject(className);
+  $ParseVueObject(className, json = {}) {
+    return new ParseVueObject(className, json);
+  },
+  $next(e, field) {
+    if (!field || !e) {
+      document.activeElement.blur();
+      try {
+        AndroidFullScreen.immersiveMode();
+      } catch (e) {
+        /* */
+      }
+      return;
+    }
+    let input = (() => {
+      const checkResult = (refs) => {
+        if (refs.$refs[field]) {
+          return refs.$refs[field];
+        }
+        return checkResult(refs.$parent);
+      };
+      return checkResult(this);
+    })();
+    if (!input) {
+      document.activeElement.blur();
+      return;
+    }
+    while (input?.$refs?.input) {
+      input = input.$refs.input;
+    }
+    input.$el.focus();
+    e.preventDefault();
   },
 };
