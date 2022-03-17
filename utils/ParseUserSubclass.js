@@ -29,6 +29,7 @@ class ParseUser extends Parse.User {
       }
     }
     await super.save();
+    this.loadData();
   }
   revert() {
     super.revert();

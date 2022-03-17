@@ -42,6 +42,7 @@ class ParseVueObject extends Parse.Object {
       }
     }
     await super.save();
+    this.loadData();
   }
   revert() {
     super.revert();
