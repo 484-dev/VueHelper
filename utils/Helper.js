@@ -76,6 +76,12 @@ export default {
       }
       return result;
     } catch (e) {
+      if (e.code === 8000) {
+        this.$router.push({
+          name: e.message,
+        });
+        return;
+      }
       if (e.code === 206 || e.code === 209) {
         const logout = async () => {
           try {
