@@ -7,6 +7,7 @@ export const Config = {
     const { appId, serverURL, subclasses, javascriptKey, localhost, Parse } = config;
     Vue.config.globalProperties.$appInfo = config;
     setCssVar("dark", config.colors.background);
+    setCssVar("secondary", config.colors.secondary);
     setCssVar("primary", config.colors.primary);
     Parse.initialize(appId);
     Parse.serverURL = localhost ? 'http://localhost:1337/parse' : serverURL;
