@@ -25,6 +25,7 @@ export const Config = {
     Vue.config.globalProperties.$ParseObject = ParseVueObject;
     Vue.config.globalProperties.$Parse = Parse;
     Vue.config.globalProperties.$currentUser = ParseUser.current;
+    const lastFetchQueue = {};
     Vue.config.globalProperties.$fetchIfNeeded = async (refresh, to = {}) => {
       const user = ParseUser.current();
       const auth = to && to.meta && to.meta.requiresAuth;
@@ -40,8 +41,14 @@ export const Config = {
         if (!obj || !obj.fetch || !obj.isDataAvailable || ids.includes(obj.id)) {
           return;
         }
+        const token = `${obj.className}-${obj.id}`;
+        const lastGot = lastFetchQueue[token] || new Date('2010');
+        if ((new Date().getTime() - lastGot.getTime()) < 1000) {
+          return;
+        }
         if (!obj.isDataAvailable(obj) || refresh) {
           toFetch.push(obj);
+          lastFetchQueue[token] = new Date()
         }
       };
       checkIfFetch(user);
@@ -86,7 +93,7 @@ export const Config = {
           next();
           return;
         }
-        handleRoute(route, to, next);
+        handleRoute({name: route}, to, next);
       } catch (e) {
         next();
         Loading.hide();
