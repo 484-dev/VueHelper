@@ -73,7 +73,7 @@ export const Config = {
         }
       }
       if (config.handleLoaded) {
-        const name = config.handleLoaded(Parse);
+        const name = config.handleLoaded(Parse, to);
         return name;
       }
     };
