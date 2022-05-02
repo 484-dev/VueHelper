@@ -6,9 +6,15 @@ export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses, javascriptKey, localhost, Parse } = config;
     Vue.config.globalProperties.$appInfo = config;
-    setCssVar("dark", config.colors.background);
-    setCssVar("secondary", config.colors.secondary);
-    setCssVar("primary", config.colors.primary);
+    if (config.colors.background) {
+      setCssVar("dark", config.colors.background);
+    }
+    if (config.colors.secondary) {
+      setCssVar("secondary", config.colors.secondary);
+    }
+    if (config.colors.primary) {
+      setCssVar("primary", config.colors.primary);
+    }
     Parse.initialize(appId);
     Parse.serverURL = localhost ? 'http://localhost:1337/parse' : serverURL;
     if (javascriptKey) {
