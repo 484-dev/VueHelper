@@ -4,14 +4,14 @@ import ParseUser from "./utils/ParseUserSubclass";
 import Helper from "./utils/Helper";
 export const Config = {
   install(Vue, config, router) {
-    const { appId, serverURL, subclasses, javascriptKey, localhost, Parse } = config;
+    const { appId, serverURL, subclasses, javascriptKey, localhost, Parse, port = 1337 } = config;
     Vue.config.globalProperties.$appInfo = config;
     const colors = config.colors || {}
     for (const color in colors) {
       setCssVar(color, colors[color]);
     }
     Parse.initialize(appId);
-    Parse.serverURL = localhost ? 'http://localhost:1337/parse' : serverURL;
+    Parse.serverURL = localhost ? `http://localhost:${port}/parse` : serverURL;
     if (javascriptKey) {
       Parse.initialize(appId, javascriptKey);
     }
