@@ -94,7 +94,7 @@ export const Config = {
           next();
           return;
         }
-        handleRoute({name: route}, to, next);
+        handleRoute(route.charAt(0) === '/' ? route : {name: route}, to, next);
       } catch (e) {
         next();
         Loading.hide();
