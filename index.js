@@ -65,7 +65,7 @@ export const Config = {
       } catch (e) {
         if (e.code === 209 || e.code === 206) {
           try {
-            await Parse.User.logOut();
+            Parse.User.logOut();
           } catch (e) {
             /* */
           }
