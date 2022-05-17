@@ -44,8 +44,8 @@ class ParseVueObject extends Parse.Object {
     await super.save();
     this.loadData();
   }
-  revert() {
-    super.revert();
+  revert(...keys) {
+    super.revert(...keys);
     this.loadData();
   }
   _finishFetch(serverData) {
