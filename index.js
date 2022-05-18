@@ -33,12 +33,15 @@ export const Config = {
       if (!user && auth) {
         return '/login';
       }
+      if (!auth) {
+        return false
+      }
       const toFetch = [];
       if (refresh) {
         toFetch.push(user);
       }
       const checkIfFetch = (obj) => {
-        const ids = toFetch.map(obj => obj.id);
+        const ids = toFetch.map(_obj => _obj?.id);
         if (!obj || !obj.fetch || !obj.isDataAvailable || ids.includes(obj.id)) {
           return;
         }
@@ -57,11 +60,17 @@ export const Config = {
         const val = user.get(key);
         checkIfFetch(val);
       }
-      if (toFetch.length == 0) {
+      const fetchCopy = [];
+      for (const item of toFetch) {
+        if (item) {
+          fetchCopy.push(item);
+        }
+      }
+      if (fetchCopy.length == 0) {
         return false;
       }
       try {
-        await Promise.all(toFetch.map(obj => obj.fetch()));
+        await Promise.all(fetchCopy.map(obj => obj.fetch()));
       } catch (e) {
         if (e.code === 209 || e.code === 206) {
           try {
