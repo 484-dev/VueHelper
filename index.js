@@ -33,7 +33,7 @@ export const Config = {
       if (!user && auth) {
         return '/login';
       }
-      if (!auth) {
+      if (!user) {
         return false
       }
       const toFetch = [];
