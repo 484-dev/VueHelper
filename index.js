@@ -72,9 +72,9 @@ export const Config = {
       try {
         await Promise.all(fetchCopy.map(obj => obj.fetch()));
       } catch (e) {
-        if (e.code === 209 || e.code === 206) {
+        if (e.code === 209 || e.code === 206 || e.message.includes('Please login to continue.')) {
           try {
-            Parse.User.logOut();
+            await Parse.User.logOut();
           } catch (e) {
             /* */
           }
