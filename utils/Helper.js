@@ -152,6 +152,9 @@ export default {
     }
     return defaultPos;
   },
+  $capitalizeFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  },
   async $getPicture({ edit = true, camera = false } = {}) {
     const getImg = () => {
       return new Promise((resolve, reject) => {
