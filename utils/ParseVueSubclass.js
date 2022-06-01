@@ -5,5 +5,8 @@ class ParseVueObject extends Parse.Object {
     super(...args);
     return new Proxy(this, proxyHandler);
   }
+  inspect() {
+    return this.attributes;
+  }
 }
 export default ParseVueObject;
