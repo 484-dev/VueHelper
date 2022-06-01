@@ -6,7 +6,11 @@ class ParseVueObject extends Parse.Object {
     return new Proxy(this, proxyHandler);
   }
   inspect() {
-    return this.attributes;
+    return {
+      className: this.className,
+      id: this.id,
+      ...this.attributes
+    };
   }
 }
 export default ParseVueObject;
