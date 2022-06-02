@@ -100,6 +100,11 @@ export default {
     }
   },
   $random(maximum, minimum) {
+    if (maximum < minimum) {
+      const min = minimum;
+      minimum = maximum;
+      maximum = min;
+    }
     return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
   },
   $timeout(duration) {
