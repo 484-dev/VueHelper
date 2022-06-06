@@ -323,7 +323,7 @@ export default {
     } else {
       query.descending("createdAt");
     }
-    const data = await this.$resolve(query.find());
+    const data = await query.find();
     if (data.length === pagination.rowsPerPage) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
