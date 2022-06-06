@@ -309,4 +309,28 @@ export default {
     input.$el.focus();
     e.preventDefault();
   },
+  async $pagination(query, props, tableLoading) {
+    const pagination = props.pagination;
+    tableLoading = true;
+    query.limit(pagination.rowsPerPage);
+    query.skip((pagination.page - 1) * pagination.rowsPerPage);
+    if (pagination.sortBy) {
+      if (pagination.descending) {
+        query.ascending(pagination.sortBy);
+      } else {
+        query.descending(pagination.sortBy);
+      }
+    } else {
+      query.descending("createdAt");
+    }
+    const data = await this.$resolve(query.find());
+    if (data.length === pagination.rowsPerPage) {
+      pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
+    } else {
+      pagination.rowsNumber =
+        (pagination.page - 1) * pagination.rowsPerPage + data.length;
+    }
+    tableLoading = false;
+    return { data, pagination, tableLoading };
+  }
 };
