@@ -310,7 +310,7 @@ export default {
     e.preventDefault();
   },
   async $pagination(query, props) {
-    const pagination = props.pagination;
+    const pagination = {...props.pagination};
     query.limit(pagination.rowsPerPage + 1);
     query.skip((pagination.page - 1) * pagination.rowsPerPage);
     if (pagination.sortBy) {
@@ -332,6 +332,6 @@ export default {
     if (data.length === pagination.rowsPerPage + 1) {
       data.pop();
     }
-    return data;
+    return {data, pagination};
   }
 };
