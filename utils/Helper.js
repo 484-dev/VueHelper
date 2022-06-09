@@ -324,13 +324,13 @@ export default {
     }
     const data = await query.find();
     if (data.length === pagination.rowsPerPage + 1) {
-      data.pop();
-    }
-    if (data.length === pagination.rowsPerPage + 1) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
       pagination.rowsNumber =
         (pagination.page - 1) * pagination.rowsPerPage + data.length;
+    }
+    if (data.length === pagination.rowsPerPage + 1) {
+      data.pop();
     }
     return data;
   }
