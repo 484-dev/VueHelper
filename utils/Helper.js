@@ -309,10 +309,9 @@ export default {
     input.$el.focus();
     e.preventDefault();
   },
-  async $pagination(query, props, tableLoading) {
+  async $pagination(query, props) {
     const pagination = props.pagination;
-    tableLoading = true;
-    query.limit(pagination.rowsPerPage);
+    query.limit(pagination.rowsPerPage + 1);
     query.skip((pagination.page - 1) * pagination.rowsPerPage);
     if (pagination.sortBy) {
       if (pagination.descending) {
@@ -324,13 +323,12 @@ export default {
       query.descending("createdAt");
     }
     const data = await query.find();
-    if (data.length === pagination.rowsPerPage) {
+    if (data.length === pagination.rowsPerPage + 1) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
       pagination.rowsNumber =
         (pagination.page - 1) * pagination.rowsPerPage + data.length;
     }
-    tableLoading = false;
-    return { data, pagination, tableLoading };
+    return data;
   }
 };
