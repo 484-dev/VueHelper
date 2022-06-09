@@ -324,6 +324,9 @@ export default {
     }
     const data = await query.find();
     if (data.length === pagination.rowsPerPage + 1) {
+      data.pop();
+    }
+    if (data.length === pagination.rowsPerPage + 1) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
       pagination.rowsNumber =
