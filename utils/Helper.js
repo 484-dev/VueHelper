@@ -1,7 +1,16 @@
-import ParseVueObject from "./ParseVueSubclass";
-import imageCompression from "browser-image-compression";
-import { Platform } from "quasar";
-import { Parse } from "parse";
+import ParseVueObject from './ParseVueSubclass';
+import imageCompression from 'browser-image-compression';
+import { Platform } from 'quasar';
+import { Parse } from 'parse';
+const makeId = (length = 8) => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -10,7 +19,7 @@ export default {
     try {
       let allowed = true;
       if (!this.$refs) {
-        throw new Error("Please set refs.");
+        throw new Error('Please set refs.');
       }
       for (const field of fields) {
         const fd = this.$refs[field];
@@ -23,7 +32,7 @@ export default {
         }
       }
       if (!allowed) {
-        throw new Error("Could not validate fields.");
+        throw new Error('Could not validate fields.');
       }
     } catch (e) {
       this.$showError(e);
@@ -37,11 +46,12 @@ export default {
     if (error.message) {
       error = error.message;
     }
-    this.$q.notify({
-      message: error,
-      type: "error",
+    const id = makeId();
+    window[`dismiss-${id}`] = this.$q.notify({
+      message: `<div onclick="window['dismiss-${id}']()">${error}</div>`,
+      type: 'error',
       duration: 2000,
-      actions: [{ icon: "close", color: "white", handler: () => {} }],
+      html: true,
     });
     if (throwErr !== undefined) {
       return;
@@ -55,16 +65,17 @@ export default {
     if (message.message) {
       message = message.message;
     }
-    this.$q.notify({
-      message,
-      type: "error",
+    const id = makeId();
+    window[`dismiss-${id}`] = this.$q.notify({
+      message: `<div onclick="window['dismiss-${id}']()">${message}</div>`,
+      type: 'error',
       duration: 2000,
-      actions: [{ icon: "close", color: "white", handler: () => {} }],
+      html: true,
     });
   },
   async $resolve(promise, silent) {
     if (!promise) {
-      throw new Error("Please pass a promise.");
+      throw new Error('Please pass a promise.');
     }
     if (!silent) {
       this.$q.loading.show();
@@ -111,7 +122,7 @@ export default {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
   $getFile(fileURL) {
-    if (Platform.is.android && !fileURL.includes("file://")) {
+    if (Platform.is.android && !fileURL.includes('file://')) {
       fileURL = `file://${fileURL}`;
     }
     return new Promise((resolve, reject) => {
@@ -167,8 +178,8 @@ export default {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
-          const input = document.createElement("input");
-          input.type = "file";
+          const input = document.createElement('input');
+          input.type = 'file';
 
           input.onclick = () => {
             document.body.onfocus = () => {
@@ -178,7 +189,7 @@ export default {
 
           const checkOnCancel = () => {
             if (input.value.length === 0) {
-              reject("No file selected.");
+              reject('No file selected.');
               return;
             }
             resolve(input.files[0]);
@@ -192,7 +203,7 @@ export default {
                 try {
                   const file = await imageCompression.getFilefromDataUrl(
                     `data:image/png;base64,${fileLocation}`,
-                    "image.jpg"
+                    'image.jpg'
                   );
                   const options = {
                     maxSizeMB: 1,
@@ -238,7 +249,7 @@ export default {
     if (!data.all) {
       data.all = Object.assign([], data.filter);
     }
-    if (val === "") {
+    if (val === '') {
       update(() => {
         data.filter = Object.assign([], data.all);
       });
@@ -256,7 +267,7 @@ export default {
     const now = new Date();
     const secondsPast = (now.getTime() - timeStamp) / 1000;
     if (secondsPast < 60) {
-      return "just now";
+      return 'just now';
     }
     if (secondsPast < 3600) {
       return `${parseInt(secondsPast / 60)}m`;
@@ -269,10 +280,10 @@ export default {
       const month = timeStamp
         .toDateString()
         .match(/ [a-zA-Z]*/)[0]
-        .replace(" ", "");
+        .replace(' ', '');
       const year =
         timeStamp.getFullYear() == now.getFullYear()
-          ? ""
+          ? ''
           : ` ${timeStamp.getFullYear()}`;
       return `${day} ${month}${year}`;
     }
@@ -310,7 +321,7 @@ export default {
     e.preventDefault();
   },
   async $pagination(query, props) {
-    const pagination = {...props.pagination};
+    const pagination = { ...props.pagination };
     query.limit(pagination.rowsPerPage + 1);
     query.skip((pagination.page - 1) * pagination.rowsPerPage);
     if (pagination.sortBy) {
@@ -320,7 +331,7 @@ export default {
         query.descending(pagination.sortBy);
       }
     } else {
-      query.descending("createdAt");
+      query.descending('createdAt');
     }
     const data = await query.find();
     if (data.length === pagination.rowsPerPage + 1) {
@@ -332,6 +343,6 @@ export default {
     if (data.length === pagination.rowsPerPage + 1) {
       data.pop();
     }
-    return {data, pagination};
-  }
+    return { data, pagination };
+  },
 };
