@@ -53,6 +53,9 @@ export default {
       duration: 2000,
       html: true,
     });
+    TapticEngine?.notification?.({
+      type: "error"
+    });
     if (throwErr !== undefined) {
       return;
     }
@@ -71,6 +74,9 @@ export default {
       type: 'error',
       duration: 2000,
       html: true,
+    });
+    TapticEngine?.notification?.({
+      type: "error"
     });
   },
   async $resolve(promise, silent) {
