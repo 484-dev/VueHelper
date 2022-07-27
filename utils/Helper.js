@@ -53,7 +53,7 @@ export default {
       duration: 2000,
       html: true,
     });
-    TapticEngine?.notification?.({
+    window.TapticEngine?.notification?.({
       type: "error"
     });
     if (throwErr !== undefined) {
@@ -75,7 +75,7 @@ export default {
       duration: 2000,
       html: true,
     });
-    TapticEngine?.notification?.({
+    window.TapticEngine?.notification?.({
       type: "error"
     });
   },
