@@ -1,11 +1,11 @@
-import ParseVueObject from './ParseVueSubclass';
-import imageCompression from 'browser-image-compression';
-import { Platform } from 'quasar';
-import { Parse } from 'parse';
+import ParseVueObject from "./ParseVueSubclass";
+import imageCompression from "browser-image-compression";
+import { Platform } from "quasar";
+import { Parse } from "parse";
 const makeId = (length = 8) => {
-  let result = '';
+  let result = "";
   const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -19,7 +19,7 @@ export default {
     try {
       let allowed = true;
       if (!this.$refs) {
-        throw new Error('Please set refs.');
+        throw new Error("Please set refs.");
       }
       for (const field of fields) {
         const fd = this.$refs[field];
@@ -32,7 +32,7 @@ export default {
         }
       }
       if (!allowed) {
-        throw new Error('Could not validate fields.');
+        throw new Error("Could not validate fields.");
       }
     } catch (e) {
       this.$showError(e);
@@ -49,12 +49,12 @@ export default {
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
       message: `<div onclick="window['dismiss-${id}']()">${error}</div>`,
-      type: 'error',
+      type: "error",
       duration: 2000,
       html: true,
     });
     window.TapticEngine?.notification?.({
-      type: "error"
+      type: "error",
     });
     if (throwErr !== undefined) {
       return;
@@ -71,17 +71,17 @@ export default {
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
       message: `<div onclick="window['dismiss-${id}']()">${message}</div>`,
-      type: 'error',
+      type: "error",
       duration: 2000,
       html: true,
     });
     window.TapticEngine?.notification?.({
-      type: "error"
+      type: "error",
     });
   },
   async $resolve(promise, silent) {
     if (!promise) {
-      throw new Error('Please pass a promise.');
+      throw new Error("Please pass a promise.");
     }
     if (!silent) {
       this.$q.loading.show();
@@ -128,7 +128,7 @@ export default {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
   $getFile(fileURL) {
-    if (Platform.is.android && !fileURL.includes('file://')) {
+    if (Platform.is.android && !fileURL.includes("file://")) {
       fileURL = `file://${fileURL}`;
     }
     return new Promise((resolve, reject) => {
@@ -184,9 +184,9 @@ export default {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept=".png, .jpg, .jpeg";
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = ".png, .jpg, .jpeg";
           input.onclick = () => {
             document.body.onfocus = () => {
               setTimeout(checkOnCancel, 500);
@@ -195,7 +195,7 @@ export default {
 
           const checkOnCancel = () => {
             if (input.value.length === 0) {
-              reject('No file selected.');
+              reject("No file selected.");
               return;
             }
             resolve(input.files[0]);
@@ -209,7 +209,7 @@ export default {
                 try {
                   const file = await imageCompression.getFilefromDataUrl(
                     `data:image/png;base64,${fileLocation}`,
-                    'image.jpg'
+                    "image.jpg"
                   );
                   const options = {
                     maxSizeMB: 1,
@@ -244,9 +244,11 @@ export default {
     try {
       this.$q.loading.show();
       const file = await getImg();
+      let type = file.type;
+      type = fileType.split("/").pop();
       const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
-      return decodedImage;
+      return { base64: decodedImage, type };
     } catch (e) {
       this.$showError(e);
     }
@@ -255,7 +257,7 @@ export default {
     if (!data.all) {
       data.all = Object.assign([], data.filter);
     }
-    if (val === '') {
+    if (val === "") {
       update(() => {
         data.filter = Object.assign([], data.all);
       });
@@ -273,7 +275,7 @@ export default {
     const now = new Date();
     const secondsPast = (now.getTime() - timeStamp) / 1000;
     if (secondsPast < 60) {
-      return 'just now';
+      return "just now";
     }
     if (secondsPast < 3600) {
       return `${parseInt(secondsPast / 60)}m`;
@@ -286,10 +288,10 @@ export default {
       const month = timeStamp
         .toDateString()
         .match(/ [a-zA-Z]*/)[0]
-        .replace(' ', '');
+        .replace(" ", "");
       const year =
         timeStamp.getFullYear() == now.getFullYear()
-          ? ''
+          ? ""
           : ` ${timeStamp.getFullYear()}`;
       return `${day} ${month}${year}`;
     }
@@ -337,7 +339,7 @@ export default {
         query.descending(pagination.sortBy);
       }
     } else {
-      query.descending('createdAt');
+      query.descending("createdAt");
     }
     const data = await query.find();
     if (data.length === pagination.rowsPerPage + 1) {
