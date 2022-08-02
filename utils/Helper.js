@@ -245,7 +245,7 @@ export default {
       this.$q.loading.show();
       const file = await getImg();
       let type = file.type;
-      type = fileType.split("/").pop();
+      type = type.split("/").pop();
       const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
       return { base64: decodedImage, type };
