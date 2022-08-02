@@ -353,7 +353,7 @@ export default {
     }
     return { data, pagination };
   },
-  $copy(link) {
+  async $copy(link) {
     await this.$resolve(copyToClipboard(link));
     this.$showMessage('Link copied to clipboard');
   }
