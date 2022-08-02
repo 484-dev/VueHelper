@@ -1,6 +1,6 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
-import { Platform } from "quasar";
+import { Platform, copyToClipboard } from "quasar";
 import { Parse } from "parse";
 const makeId = (length = 8) => {
   let result = "";
@@ -353,4 +353,8 @@ export default {
     }
     return { data, pagination };
   },
+  $copy(link) {
+    await this.$resolve(copyToClipboard(link));
+    this.$showMessage('Link copied to clipboard');
+  }
 };
