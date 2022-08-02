@@ -186,7 +186,7 @@ export default {
         if (!navigator.camera) {
           const input = document.createElement('input');
           input.type = 'file';
-
+          input.accept=".png, .jpg, .jpeg";
           input.onclick = () => {
             document.body.onfocus = () => {
               setTimeout(checkOnCancel, 500);
