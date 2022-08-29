@@ -32,5 +32,9 @@ const proxyHandler = {
     }
     return Reflect.set(target, key, value, receiver);
   },
+
+  deleteProperty(target, prop) {
+    return target.unset(prop);
+  }
 };
 export default proxyHandler;
