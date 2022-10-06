@@ -13,5 +13,21 @@ class ParseVueObject extends Parse.Object {
       this.save();
     }, delay);
   }
+  revert(...fields) {
+    if (!fields.length) {
+      fields = this.dirtyKeys();
+    }
+    const cache = Parse.CoreManager.getObjectStateController().getObjectCache(
+      this._getStateIdentifier()
+    )
+    for (const field of fields) {
+      try {
+        this[field] = Parse._encode(JSON.parse(cache[field]));
+      } catch (e) {
+        this[field] = Parse._encode(cache[field]);
+      }
+    }
+    super.revert(...fields);
+  }
 }
 export default ParseVueObject;
