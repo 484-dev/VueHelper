@@ -28,6 +28,7 @@ class ParseVueObject extends Parse.Object {
       }
     }
     super.revert(...fields);
+    this.dirtyKeys = this.dirtyKeys.bind(this);
   }
 }
 export default ParseVueObject;
