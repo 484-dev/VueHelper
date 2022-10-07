@@ -27,8 +27,14 @@ class ParseVueObject extends Parse.Object {
         this[field] = Parse._encode(cache[field]);
       }
     }
-    super.revert(...fields);
+    const response = super.revert(...fields);
     this.dirtyKeys = this.dirtyKeys.bind(this);
+    return response;
+  }
+  async save(...args) {
+    const response = await super.save(...args);
+    this.dirtyKeys = this.dirtyKeys.bind(this);
+    return response;
   }
 }
 export default ParseVueObject;
