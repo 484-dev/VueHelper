@@ -96,6 +96,11 @@ export const Config = {
     };
     router.beforeEach(async (to, from, next) => {
       try {
+        if (to.fullPath === '/' && from.fullPath === '/' && config.hasLanding) {
+          next();
+          Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
+          return;
+        }
         Loading.show();
         const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
         Loading.hide();
