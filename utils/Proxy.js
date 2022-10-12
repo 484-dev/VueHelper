@@ -13,7 +13,11 @@ const nestedHandler = {
         return true;
       }
       if (i === max_level) {
-        target[level] = value;
+        if (value == null) {
+          delete target[level];
+        } else {
+          target[level] = value;
+        }
       } else {
         const obj = target[level] || {};
         target = obj;
