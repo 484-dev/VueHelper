@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/484-dev/VueHelper#readme",
   "dependencies": {
-    "browser-image-compression": "^1.0.14",
-    "parse": "^3.3.0"
+    "browser-image-compression": "^2.0.0",
+    "parse": "^3.4.4"
   }
 }
