@@ -69,9 +69,12 @@ const proxyHandler = {
     if (proxyHandler._isInternal(key, current)) {
       return Reflect.set(target, key, value, receiver);
     }
-    const returnValue = receiver.set(key, value);
+    if (Object.prototype.toString.call(value) === '[object Object]' && value._proxy_op === 'fetch') {
+      return true;
+    }
+    receiver.set(key, value);
     receiver.dirtyKeys = receiver.dirtyKeys.bind(receiver);
-    return returnValue;
+    return true;
   },
 
   deleteProperty(target, key) {
