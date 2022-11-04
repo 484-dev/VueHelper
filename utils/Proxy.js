@@ -1,7 +1,7 @@
 import { Parse } from "parse";
 const nestedHandler = {
   updateParent(key, value) {
-    const levels = this._path.split('.');
+    const levels = this._path.split(".");
     levels.push(key);
     const topLevel = levels[0];
     levels.shift();
@@ -9,7 +9,7 @@ const nestedHandler = {
     let target = scope;
     const max_level = levels.length - 1;
     levels.some((level, i) => {
-      if (typeof level === 'undefined') {
+      if (typeof level === "undefined") {
         return true;
       }
       if (i === max_level) {
@@ -28,7 +28,11 @@ const nestedHandler = {
   get(target, key, receiver) {
     const reflector = Reflect.get(target, key, receiver);
     const prop = target[key];
-    if (Object.prototype.toString.call(prop) === '[object Object]' && !prop?.constructor?.name?.includes('Parse')) {
+    if (
+      Object.prototype.toString.call(prop) === "[object Object]" &&
+      !(prop instanceof Parse.Object) &&
+      !prop?.constructor?.name?.includes("Parse")
+    ) {
       const thisHandler = { ...nestedHandler };
       thisHandler._path = `${this._path}.${key}`;
       thisHandler._parent = this._parent;
@@ -55,7 +59,11 @@ const proxyHandler = {
       return reflector;
     }
     const getValue = receiver.get(key);
-    if (Object.prototype.toString.call(getValue) === '[object Object]' && !getValue?.constructor?.name?.includes('Parse')) {
+    if (
+      Object.prototype.toString.call(getValue) === "[object Object]" &&
+      !(getValue instanceof Parse.Object) &&
+      !getValue?.constructor?.name?.includes("Parse")
+    ) {
       const thisHandler = { ...nestedHandler };
       thisHandler._path = key;
       thisHandler._parent = receiver;
@@ -69,7 +77,10 @@ const proxyHandler = {
     if (proxyHandler._isInternal(key, current)) {
       return Reflect.set(target, key, value, receiver);
     }
-    if (Object.prototype.toString.call(value) === '[object Object]' && value._proxy_op === 'fetch') {
+    if (
+      Object.prototype.toString.call(value) === "[object Object]" &&
+      value._proxy_op === "fetch"
+    ) {
       return true;
     }
     receiver.set(key, value);
@@ -87,17 +98,17 @@ const proxyHandler = {
 
   _isInternal(key, value) {
     const internalFields = Object.freeze([
-      'objectId',
-      'id',
-      'className',
-      'attributes',
-      'createdAt',
-      'updatedAt',
-      'then',
+      "objectId",
+      "id",
+      "className",
+      "attributes",
+      "createdAt",
+      "updatedAt",
+      "then",
     ]);
     return (
-      typeof value === 'function' ||
-      key.toString().charAt(0) === '_' ||
+      typeof value === "function" ||
+      key.toString().charAt(0) === "_" ||
       internalFields.includes(key.toString())
     );
   },
