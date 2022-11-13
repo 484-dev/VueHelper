@@ -30,7 +30,7 @@ const nestedHandler = {
     const prop = target[key];
     if (
       Object.prototype.toString.call(prop) === "[object Object]" &&
-      !proxyHandler._isParseInstance(prop)
+      prop?.constructor?.name === 'Object'
     ) {
       const thisHandler = { ...nestedHandler };
       thisHandler._path = `${this._path}.${key}`;
@@ -60,7 +60,7 @@ const proxyHandler = {
     const getValue = receiver.get(key);
     if (
       Object.prototype.toString.call(getValue) === "[object Object]" &&
-      !proxyHandler._isParseInstance(getValue)
+      getValue?.constructor?.name === 'Object'
     ) {
       const thisHandler = { ...nestedHandler };
       thisHandler._path = key;
@@ -111,11 +111,5 @@ const proxyHandler = {
     );
   },
 
-  _isParseInstance(prop) {
-    return Object.keys(Parse)
-      .filter((key) => key.charAt(0) !== key.charAt(0).toLowerCase())
-      .filter((key) => typeof Parse[key] === "function")
-      .some((key) => prop instanceof Parse[key]);
-  },
 };
 export default proxyHandler;
