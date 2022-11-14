@@ -331,7 +331,7 @@ export default {
     input.$el.focus();
     e.preventDefault();
   },
-  async $pagination(query, props) {
+  async $pagination(query, props, context) {
     const pagination = { ...props.pagination };
     query.limit(pagination.rowsPerPage + 1);
     query.skip((pagination.page - 1) * pagination.rowsPerPage);
@@ -344,7 +344,7 @@ export default {
     } else {
       query.descending("createdAt");
     }
-    const data = await query.find();
+    const data = await query.find({ context });
     if (data.length === pagination.rowsPerPage + 1) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
