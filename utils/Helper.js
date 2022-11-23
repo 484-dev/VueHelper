@@ -325,6 +325,9 @@ export default {
       document.activeElement.blur();
       return;
     }
+    if (Array.isArray(input)) {
+      input = input[0];
+    }
     while (input?.$refs?.input) {
       input = input.$refs.input;
     }
