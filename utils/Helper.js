@@ -1,7 +1,7 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
 import { Platform, copyToClipboard, date } from "quasar";
-import { Parse } from "parse";
+import Parse from 'parse/dist/parse.min.js'
 const makeId = (length = 8) => {
   let result = "";
   const characters =

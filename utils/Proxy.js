@@ -1,4 +1,3 @@
-import { Parse } from "parse";
 const nestedHandler = {
   updateParent(key, value) {
     const levels = this._path.split(".");
