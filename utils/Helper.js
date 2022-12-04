@@ -11,6 +11,7 @@ const makeId = (length = 8) => {
   }
   return result;
 };
+const messages = {}
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -46,6 +47,9 @@ export default {
     if (error.message) {
       error = error.message;
     }
+    if (messages[error]) {
+      return;
+    }
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
       message: `<div onclick="window['dismiss-${id}']()">${error}</div>`,
@@ -53,6 +57,11 @@ export default {
       duration: 2000,
       html: true,
     });
+    messages[error] = true;
+    setTimeout(() => {
+      delete window[`dismiss-${id}`];
+      delete messages[error];
+    }, 2000);
     window.TapticEngine?.notification?.({
       type: "error",
     });
