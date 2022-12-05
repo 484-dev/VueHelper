@@ -181,6 +181,10 @@ export default {
             resolved = true;
           },
           (error) => {
+            if (error.PERMISSION_DENIED) {
+              reject(new Error('Permission denied'));
+              return;
+            }
             reject(error);
             resolved = true;
           }
