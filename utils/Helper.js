@@ -52,7 +52,7 @@ export default {
     }
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']()">${error}</div>`,
+      message: `<div onclick="window['dismiss-${id}']?.()">${error}</div>`,
       type: "error",
       duration: 2000,
       html: true,
@@ -61,7 +61,7 @@ export default {
     setTimeout(() => {
       delete window[`dismiss-${id}`];
       delete messages[error];
-    }, 2000);
+    }, 3000);
     window.TapticEngine?.notification?.({
       type: "error",
     });
@@ -185,6 +185,7 @@ export default {
               reject(new Error('Permission denied'));
               return;
             }
+            console.log(error);
             reject(error);
             resolved = true;
           }
