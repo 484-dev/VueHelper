@@ -225,7 +225,7 @@ export default {
               (async () => {
                 try {
                   const file = await imageCompression.getFilefromDataUrl(
-                    `data:image/png;base64,${fileLocation}`,
+                    `data:image/jpg;base64,${fileLocation}`,
                     "image.jpg"
                   );
                   const options = {
