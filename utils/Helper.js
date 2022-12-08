@@ -77,6 +77,10 @@ export default {
     if (message.message) {
       message = message.message;
     }
+    if (messages[message]) {
+      return;
+    }
+    messages[message] = true;
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
       message: `<div onclick="window['dismiss-${id}']()">${message}</div>`,
@@ -84,6 +88,10 @@ export default {
       duration: 2000,
       html: true,
     });
+    setTimeout(() => {
+      delete window[`dismiss-${id}`];
+      delete messages[message];
+    }, 3000);
     window.TapticEngine?.notification?.({
       type: "error",
     });
