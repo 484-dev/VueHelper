@@ -21,7 +21,7 @@ export const Config = {
     }
     Parse.Object.registerSubclass("_User", ParseUser);
     Object.assign(Vue.config.globalProperties, Helper);
-
+    Parse.User = ParseUser;
     Vue.config.globalProperties.$ParseUser = ParseUser;
     Vue.config.globalProperties.$ParseObject = ParseVueObject;
     Vue.config.globalProperties.$Parse = Parse;
