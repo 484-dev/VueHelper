@@ -1,5 +1,6 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
+import sanitizeHtml from 'sanitize-html';
 import { Platform, copyToClipboard, date } from "quasar";
 import Parse from 'parse/dist/parse.min.js'
 const makeId = (length = 8) => {
@@ -52,7 +53,7 @@ export default {
     }
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']?.()">${error}</div>`,
+      message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(error)}</div>`,
       type: "error",
       duration: 2000,
       html: true,
@@ -83,7 +84,7 @@ export default {
     messages[message] = true;
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']()">${message}</div>`,
+      message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(message)}</div>`,
       type: "error",
       duration: 2000,
       html: true,
