@@ -1,8 +1,8 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from "sanitize-html";
 import { Platform, copyToClipboard, date } from "quasar";
-import Parse from 'parse/dist/parse.min.js';
+import Parse from "parse/dist/parse.min.js";
 const makeId = (length = 8) => {
   let result = "";
   const characters =
@@ -12,7 +12,7 @@ const makeId = (length = 8) => {
   }
   return result;
 };
-const messages = {}
+const messages = {};
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -43,29 +43,30 @@ export default {
   $showError(error, throwErr) {
     this.$q.loading.hide();
     if (!error) {
-      return;
+      error = "An unknown error occurred.";
     }
     if (error.message) {
       error = error.message;
     }
-    if (messages[error]) {
-      return;
+    if (!messages[error]) {
+      const id = makeId();
+      window[`dismiss-${id}`] = this.$q.notify({
+        message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(
+          error
+        )}</div>`,
+        type: "error",
+        duration: 2000,
+        html: true,
+      });
+      messages[error] = true;
+      setTimeout(() => {
+        delete window[`dismiss-${id}`];
+        delete messages[error];
+      }, 3000);
+      window.TapticEngine?.notification?.({
+        type: "error",
+      });
     }
-    const id = makeId();
-    window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(error)}</div>`,
-      type: "error",
-      duration: 2000,
-      html: true,
-    });
-    messages[error] = true;
-    setTimeout(() => {
-      delete window[`dismiss-${id}`];
-      delete messages[error];
-    }, 3000);
-    window.TapticEngine?.notification?.({
-      type: "error",
-    });
     if (throwErr !== undefined) {
       return;
     }
@@ -84,7 +85,9 @@ export default {
     messages[message] = true;
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(message)}</div>`,
+      message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(
+        message
+      )}</div>`,
       type: "error",
       duration: 2000,
       html: true,
@@ -191,7 +194,7 @@ export default {
           },
           (error) => {
             if (error.PERMISSION_DENIED) {
-              reject(new Error('Permission denied'));
+              reject(new Error("Permission denied"));
               return;
             }
             console.log(error);
@@ -384,9 +387,9 @@ export default {
   },
   async $copy(link) {
     await this.$resolve(copyToClipboard(link));
-    this.$showMessage('Link copied to clipboard');
+    this.$showMessage("Link copied to clipboard");
   },
   $formatDate(...args) {
     return date.formatDate(...args);
-  }
+  },
 };
