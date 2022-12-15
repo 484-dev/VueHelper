@@ -1,4 +1,4 @@
-import Parse from 'parse/dist/parse.min.js'
+import { Parse } from 'parse'
 import proxyHandler from "./Proxy";
 class ParseVueObject extends Parse.Object {
   constructor(...args) {
