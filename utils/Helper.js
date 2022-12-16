@@ -57,12 +57,12 @@ export default {
         type: "error",
         duration: 2000,
         html: true,
+        onDismiss() {
+          delete window[`dismiss-${id}`];
+          delete messages[error];
+        },
       });
       messages[error] = true;
-      setTimeout(() => {
-        delete window[`dismiss-${id}`];
-        delete messages[error];
-      }, 3000);
       window.TapticEngine?.notification?.({
         type: "error",
       });
@@ -91,11 +91,11 @@ export default {
       type: "error",
       duration: 2000,
       html: true,
+      onDismiss() {
+        delete window[`dismiss-${id}`];
+        delete messages[message];
+      },
     });
-    setTimeout(() => {
-      delete window[`dismiss-${id}`];
-      delete messages[message];
-    }, 3000);
     window.TapticEngine?.notification?.({
       type: "error",
     });
