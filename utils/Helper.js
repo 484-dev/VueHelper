@@ -117,7 +117,7 @@ export default {
       if (e.code === 100) {
         e.message = `Could not connect to the server. Please check your internet connect or try again later.`;
       }
-      if (e.code === 8000) {
+      if (e.code === 8000 && this.$route.name !== e.message) {
         this.$router.push({
           name: e.message,
         });
