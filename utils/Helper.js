@@ -1,12 +1,12 @@
-import ParseVueObject from "./ParseVueSubclass";
-import imageCompression from "browser-image-compression";
-import sanitizeHtml from "sanitize-html";
-import { Platform, copyToClipboard, date } from "quasar";
-import Parse from "parse/dist/parse.min.js";
+import ParseVueObject from './ParseVueSubclass';
+import imageCompression from 'browser-image-compression';
+import sanitizeHtml from 'sanitize-html';
+import { Platform, copyToClipboard, date } from 'quasar';
+import Parse from 'parse/dist/parse.min.js';
 const makeId = (length = 8) => {
-  let result = "";
+  let result = '';
   const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -22,7 +22,7 @@ export default {
     try {
       let allowed = true;
       if (!this.$refs) {
-        throw new Error("Please set refs.");
+        throw new Error('Please set refs.');
       }
       for (const field of fields) {
         const fd = this.$refs[field];
@@ -35,7 +35,7 @@ export default {
         }
       }
       if (!allowed) {
-        throw new Error("Could not validate fields.");
+        throw new Error('Could not validate fields.');
       }
     } catch (e) {
       this.$showError(e);
@@ -44,7 +44,7 @@ export default {
   $showError(error, throwErr) {
     this.$q.loading.hide();
     if (!error) {
-      error = "An unknown error occurred.";
+      error = 'An unknown error occurred.';
     }
     if (error.message) {
       error = error.message;
@@ -55,7 +55,7 @@ export default {
         message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(
           error
         )}</div>`,
-        type: "error",
+        type: 'error',
         duration: 2000,
         html: true,
         onDismiss() {
@@ -65,7 +65,7 @@ export default {
       });
       messages[error] = true;
       window.TapticEngine?.notification?.({
-        type: "error",
+        type: 'error',
       });
     }
     if (throwErr !== undefined) {
@@ -89,7 +89,7 @@ export default {
       message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(
         message
       )}</div>`,
-      type: "error",
+      type: 'error',
       duration: 2000,
       html: true,
       onDismiss() {
@@ -98,12 +98,12 @@ export default {
       },
     });
     window.TapticEngine?.notification?.({
-      type: "error",
+      type: 'error',
     });
   },
   async $resolve(promise, silent) {
     if (!promise) {
-      throw new Error("Please pass a promise.");
+      throw new Error('Please pass a promise.');
     }
     if (!silent) {
       this.$q.loading.show();
@@ -116,7 +116,10 @@ export default {
       return result;
     } catch (e) {
       if (e.code === 100) {
-        e.message = `Could not connect to the server. Please check your internet connect or try again later.`;
+        e.message =
+          e.error === 'Too many requests'
+            ? e.error
+            : `Could not connect to the server. Please check your internet connect or try again later.`;
       }
       if (e.code === 8000) {
         if (this.$route.name !== e.message && !isChanging) {
@@ -159,7 +162,7 @@ export default {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
   $getFile(fileURL) {
-    if (Platform.is.android && !fileURL.includes("file://")) {
+    if (Platform.is.android && !fileURL.includes('file://')) {
       fileURL = `file://${fileURL}`;
     }
     return new Promise((resolve, reject) => {
@@ -201,7 +204,7 @@ export default {
           },
           (error) => {
             if (error.PERMISSION_DENIED) {
-              reject(new Error("Permission denied"));
+              reject(new Error('Permission denied'));
               return;
             }
             console.log(error);
@@ -220,9 +223,9 @@ export default {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
-          const input = document.createElement("input");
-          input.type = "file";
-          input.accept = ".png, .jpg, .jpeg";
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.png, .jpg, .jpeg';
           input.onclick = () => {
             document.body.onfocus = () => {
               setTimeout(checkOnCancel, 500);
@@ -231,7 +234,7 @@ export default {
 
           const checkOnCancel = () => {
             if (input.value.length === 0) {
-              reject("No file selected.");
+              reject('No file selected.');
               return;
             }
             resolve(input.files[0]);
@@ -245,7 +248,7 @@ export default {
                 try {
                   const file = await imageCompression.getFilefromDataUrl(
                     `data:image/jpg;base64,${fileLocation}`,
-                    "image.jpg"
+                    'image.jpg'
                   );
                   const options = {
                     maxSizeMB: 1,
@@ -281,7 +284,7 @@ export default {
       this.$q.loading.show();
       const file = await getImg();
       let type = file.type;
-      type = type.split("/").pop();
+      type = type.split('/').pop();
       const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
       return { base64: decodedImage, type };
@@ -293,7 +296,7 @@ export default {
     if (!data.all) {
       data.all = Object.assign([], data.filter);
     }
-    if (val === "") {
+    if (val === '') {
       update(() => {
         data.filter = Object.assign([], data.all);
       });
@@ -311,7 +314,7 @@ export default {
     const now = new Date();
     const secondsPast = (now.getTime() - timeStamp) / 1000;
     if (secondsPast < 60) {
-      return "just now";
+      return 'just now';
     }
     if (secondsPast < 3600) {
       return `${parseInt(secondsPast / 60)}m`;
@@ -324,10 +327,10 @@ export default {
       const month = timeStamp
         .toDateString()
         .match(/ [a-zA-Z]*/)[0]
-        .replace(" ", "");
+        .replace(' ', '');
       const year =
         timeStamp.getFullYear() == now.getFullYear()
-          ? ""
+          ? ''
           : ` ${timeStamp.getFullYear()}`;
       return `${day} ${month}${year}`;
     }
@@ -378,7 +381,7 @@ export default {
         query.descending(pagination.sortBy);
       }
     } else {
-      query.descending("createdAt");
+      query.descending('createdAt');
     }
     const data = await query.find({ context });
     if (data.length === pagination.rowsPerPage + 1) {
@@ -394,7 +397,7 @@ export default {
   },
   async $copy(link) {
     await this.$resolve(copyToClipboard(link));
-    this.$showMessage("Link copied to clipboard");
+    this.$showMessage('Link copied to clipboard');
   },
   $formatDate(...args) {
     return date.formatDate(...args);
