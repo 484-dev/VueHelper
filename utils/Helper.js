@@ -13,6 +13,7 @@ const makeId = (length = 8) => {
   return result;
 };
 const messages = {};
+let isChanging = false;
 export default {
   $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
@@ -117,10 +118,16 @@ export default {
       if (e.code === 100) {
         e.message = `Could not connect to the server. Please check your internet connect or try again later.`;
       }
-      if (e.code === 8000 && this.$route.name !== e.message) {
-        this.$router.push({
-          name: e.message,
-        });
+      if (e.code === 8000) {
+        if (this.$route.name !== e.message && !isChanging) {
+          isChanging = true;
+          this.$router.push({
+            name: e.message,
+          });
+          setTimeout(() => {
+            isChanging = false;
+          }, 1000);
+        }
         return;
       }
       if (e.code === 206 || e.code === 209) {
