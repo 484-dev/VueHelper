@@ -117,8 +117,8 @@ export default {
     } catch (e) {
       if (e.code === 100) {
         e.message =
-          e.error === 'Too many requests'
-            ? e.error
+          e.message === 'Too many requests'
+            ? e.message
             : `Could not connect to the server. Please check your internet connect or try again later.`;
       }
       if (e.code === 8000) {
