@@ -402,4 +402,7 @@ export default {
   $formatDate(...args) {
     return date.formatDate(...args);
   },
+  $extractDate(...args) {
+    return date.extractDate(...args);
+  }
 };
