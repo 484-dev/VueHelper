@@ -19,6 +19,7 @@
   "homepage": "https://github.com/484-dev/VueHelper#readme",
   "dependencies": {
     "browser-image-compression": "2.0.0",
+    "deepcopy": "^2.1.0",
     "sanitize-html": "2.8.0"
   }
 }

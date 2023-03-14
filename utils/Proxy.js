@@ -1,10 +1,12 @@
+import * as deepcopy from 'deepcopy';
 const nestedHandler = {
   updateParent(key, value) {
     const levels = this._path.split(".");
     levels.push(key);
     const topLevel = levels[0];
     levels.shift();
-    const scope = JSON.parse(JSON.stringify(this._parent[topLevel]));
+    const copiedParent = Array.isArray(this._parent[topLevel]) ? [...this._parent[topLevel]] : {...this._parent[topLevel]};
+    const scope = deepcopy(copiedParent);
     let target = scope;
     const max_level = levels.length - 1;
     levels.some((level, i) => {
@@ -18,7 +20,7 @@ const nestedHandler = {
           target[level] = value;
         }
       } else {
-        const obj = target[level] || {};
+        const obj = target[level] || (this._array ? [] : {});
         target = obj;
       }
     });
@@ -28,13 +30,16 @@ const nestedHandler = {
     const reflector = Reflect.get(target, key, receiver);
     const prop = target[key];
     if (
-      Object.prototype.toString.call(prop) === "[object Object]" &&
-      prop?.constructor?.name === 'Object'
-    ) {
-      const thisHandler = { ...nestedHandler };
-      thisHandler._path = `${this._path}.${key}`;
-      thisHandler._parent = this._parent;
-      return new Proxy({ ...prop }, thisHandler);
+      Array.isArray(prop) ||
+      (Object.prototype.toString.call(prop) === "[object Object]" && prop?.constructor?.name === 'Object')
+      ) {
+        const thisHandler = { ...nestedHandler };
+        thisHandler._path = `${this._path}.${key}`;
+        thisHandler._parent = this._parent;
+        const isArray = Array.isArray(prop)
+        thisHandler._array = isArray
+        const copied = isArray ? [...prop] : {...prop};
+      return new Proxy(copied, thisHandler);
     }
     return reflector;
   },
@@ -58,13 +63,14 @@ const proxyHandler = {
     }
     const getValue = receiver.get(key);
     if (
-      Object.prototype.toString.call(getValue) === "[object Object]" &&
-      getValue?.constructor?.name === 'Object'
+      Array.isArray(getValue) ||
+      (Object.prototype.toString.call(getValue) === "[object Object]" && getValue?.constructor?.name === 'Object')
     ) {
       const thisHandler = { ...nestedHandler };
       thisHandler._path = key;
       thisHandler._parent = receiver;
-      return new Proxy({ ...getValue }, thisHandler);
+      const copied = Array.isArray(getValue) ? [...getValue] : {...getValue};
+      return new Proxy(copied, thisHandler);
     }
     return getValue ?? reflector;
   },
