@@ -1,12 +1,11 @@
-import ParseVueObject from './ParseVueSubclass';
-import imageCompression from 'browser-image-compression';
-import sanitizeHtml from 'sanitize-html';
-import { Platform, copyToClipboard, date } from 'quasar';
-import Parse from 'parse/dist/parse.min.js';
+import ParseVueObject from "./ParseVueSubclass";
+import imageCompression from "browser-image-compression";
+import sanitizeHtml from "sanitize-html";
+import { Platform, copyToClipboard, date } from "quasar";
+import Parse from "parse/dist/parse.min.js";
 const makeId = (length = 8) => {
-  let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -22,7 +21,7 @@ export default {
     try {
       let allowed = true;
       if (!this.$refs) {
-        throw new Error('Please set refs.');
+        throw new Error("Please set refs.");
       }
       for (const field of fields) {
         const fd = this.$refs[field];
@@ -35,7 +34,7 @@ export default {
         }
       }
       if (!allowed) {
-        throw new Error('Could not validate fields.');
+        throw new Error("Could not validate fields.");
       }
     } catch (e) {
       this.$showError(e);
@@ -44,7 +43,7 @@ export default {
   $showError(error, throwErr) {
     this.$q.loading.hide();
     if (!error) {
-      error = 'An unknown error occurred.';
+      error = "An unknown error occurred.";
     }
     if (error.message) {
       error = error.message;
@@ -52,10 +51,8 @@ export default {
     if (!messages[error]) {
       const id = makeId();
       window[`dismiss-${id}`] = this.$q.notify({
-        message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(
-          error
-        )}</div>`,
-        type: 'error',
+        message: `<div onclick="window['dismiss-${id}']?.()">${sanitizeHtml(error)}</div>`,
+        type: "error",
         duration: 2000,
         html: true,
         onDismiss() {
@@ -65,7 +62,7 @@ export default {
       });
       messages[error] = true;
       window.TapticEngine?.notification?.({
-        type: 'error',
+        type: "error",
       });
     }
     if (throwErr !== undefined) {
@@ -86,10 +83,8 @@ export default {
     messages[message] = true;
     const id = makeId();
     window[`dismiss-${id}`] = this.$q.notify({
-      message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(
-        message
-      )}</div>`,
-      type: 'error',
+      message: `<div onclick="window['dismiss-${id}']()">${sanitizeHtml(message)}</div>`,
+      type: "error",
       duration: 2000,
       html: true,
       onDismiss() {
@@ -98,12 +93,12 @@ export default {
       },
     });
     window.TapticEngine?.notification?.({
-      type: 'error',
+      type: "error",
     });
   },
   async $resolve(promise, silent) {
     if (!promise) {
-      throw new Error('Please pass a promise.');
+      throw new Error("Please pass a promise.");
     }
     if (!silent) {
       this.$q.loading.show();
@@ -116,10 +111,7 @@ export default {
       return result;
     } catch (e) {
       if (e.code === 100) {
-        e.message =
-          e.message === 'Too many requests'
-            ? e.message
-            : `Could not connect to the server. Please check your internet connect or try again later.`;
+        e.message = e.message === "Too many requests" ? e.message : `Could not connect to the server. Please check your internet connect or try again later.`;
       }
       if (e.code === 8000) {
         if (this.$route.name !== e.message && !isChanging) {
@@ -162,7 +154,7 @@ export default {
     return new Promise((resolve) => setTimeout(resolve, duration));
   },
   $getFile(fileURL) {
-    if (Platform.is.android && !fileURL.includes('file://')) {
+    if (Platform.is.android && !fileURL.includes("file://")) {
       fileURL = `file://${fileURL}`;
     }
     return new Promise((resolve, reject) => {
@@ -182,37 +174,33 @@ export default {
       );
     });
   },
-  $getLocation() {
+  async $getLocation() {
     const defaultPos = new Parse.GeoPoint({
       latitude: -37.813629,
       longitude: 144.963058,
     });
     if (navigator.geolocation) {
-      return new Promise((resolve, reject) => {
-        let resolved = false;
-        setTimeout(() => {
-          if (!resolved) {
-            resolved = true;
-            resolve(defaultPos);
+      const getPosition = async () => {
+        let position = await Promise.race([new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject)), new Promise((resolve) => setTimeout(resolve, 5000))]);
+        console.log({ position });
+        if (position) {
+          const { latitude, longitude } = position.coords;
+          return new Parse.GeoPoint({ latitude, longitude });
+        }
+      };
+      try {
+        await getPosition();
+      } catch (e) {
+        if (e.PERMISSION_DENIED) {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return await getPosition();
+          } catch (e) {
+            throw new Error(`Could not determine location - location permission has been denied. Please check the app's settings`);
           }
-        }, 5000);
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            resolve(new Parse.GeoPoint({ latitude, longitude }));
-            resolved = true;
-          },
-          (error) => {
-            if (error.PERMISSION_DENIED) {
-              reject(new Error('Permission denied'));
-              return;
-            }
-            console.log(error);
-            reject(error);
-            resolved = true;
-          }
-        );
-      });
+        }
+        throw e;
+      }
     }
     return defaultPos;
   },
@@ -223,9 +211,9 @@ export default {
     const getImg = () => {
       return new Promise((resolve, reject) => {
         if (!navigator.camera) {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = '.png, .jpg, .jpeg';
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = ".png, .jpg, .jpeg";
           input.onclick = () => {
             document.body.onfocus = () => {
               setTimeout(checkOnCancel, 500);
@@ -234,7 +222,7 @@ export default {
 
           const checkOnCancel = () => {
             if (input.value.length === 0) {
-              reject('No file selected.');
+              reject("No file selected.");
               return;
             }
             resolve(input.files[0]);
@@ -246,10 +234,7 @@ export default {
             (fileLocation) => {
               (async () => {
                 try {
-                  const file = await imageCompression.getFilefromDataUrl(
-                    `data:image/jpg;base64,${fileLocation}`,
-                    'image.jpg'
-                  );
+                  const file = await imageCompression.getFilefromDataUrl(`data:image/jpg;base64,${fileLocation}`, "image.jpg");
                   const options = {
                     maxSizeMB: 1,
                     maxWidthOrHeight: 800,
@@ -268,9 +253,7 @@ export default {
             {
               quality: 100,
               encodingType: navigator.camera.EncodingType.JPEG,
-              sourceType: camera
-                ? navigator.camera.PictureSourceType.CAMERA
-                : navigator.camera.PictureSourceType.PHOTOLIBRARY,
+              sourceType: camera ? navigator.camera.PictureSourceType.CAMERA : navigator.camera.PictureSourceType.PHOTOLIBRARY,
               mediaType: navigator.camera.MediaType.PICTURE,
               allowEdit: Platform.is.android ? false : edit,
               destinationType: Camera.DestinationType.DATA_URL,
@@ -284,7 +267,7 @@ export default {
       this.$q.loading.show();
       const file = await getImg();
       let type = file.type;
-      type = type.split('/').pop();
+      type = type.split("/").pop();
       const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
       return { base64: decodedImage, type };
@@ -296,7 +279,7 @@ export default {
     if (!data.all) {
       data.all = Object.assign([], data.filter);
     }
-    if (val === '') {
+    if (val === "") {
       update(() => {
         data.filter = Object.assign([], data.all);
       });
@@ -314,7 +297,7 @@ export default {
     const now = new Date();
     const secondsPast = (now.getTime() - timeStamp) / 1000;
     if (secondsPast < 60) {
-      return 'just now';
+      return "just now";
     }
     if (secondsPast < 3600) {
       return `${parseInt(secondsPast / 60)}m`;
@@ -327,11 +310,8 @@ export default {
       const month = timeStamp
         .toDateString()
         .match(/ [a-zA-Z]*/)[0]
-        .replace(' ', '');
-      const year =
-        timeStamp.getFullYear() == now.getFullYear()
-          ? ''
-          : ` ${timeStamp.getFullYear()}`;
+        .replace(" ", "");
+      const year = timeStamp.getFullYear() == now.getFullYear() ? "" : ` ${timeStamp.getFullYear()}`;
       return `${day} ${month}${year}`;
     }
   },
@@ -381,14 +361,13 @@ export default {
         query.descending(pagination.sortBy);
       }
     } else {
-      query.descending('createdAt');
+      query.descending("createdAt");
     }
     const data = await query.find({ context });
     if (data.length === pagination.rowsPerPage + 1) {
       pagination.rowsNumber = pagination.page * pagination.rowsPerPage + 1;
     } else {
-      pagination.rowsNumber =
-        (pagination.page - 1) * pagination.rowsPerPage + data.length;
+      pagination.rowsNumber = (pagination.page - 1) * pagination.rowsPerPage + data.length;
     }
     if (data.length === pagination.rowsPerPage + 1) {
       data.pop();
@@ -397,12 +376,12 @@ export default {
   },
   async $copy(link) {
     await this.$resolve(copyToClipboard(link));
-    this.$showMessage('Link copied to clipboard');
+    this.$showMessage("Link copied to clipboard");
   },
   $formatDate(...args) {
     return date.formatDate(...args);
   },
   $extractDate(...args) {
     return date.extractDate(...args);
-  }
+  },
 };
