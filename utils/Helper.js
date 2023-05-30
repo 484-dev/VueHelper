@@ -2,7 +2,7 @@ import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
 import sanitizeHtml from "sanitize-html";
 import { Platform, copyToClipboard, date } from "quasar";
-import Parse from "parse/dist/parse.min.js";
+import Parse from "parse";
 const makeId = (length = 8) => {
   let result = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
