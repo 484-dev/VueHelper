@@ -6,7 +6,7 @@ export const Config = {
   install(Vue, config, router) {
     const { appId, serverURL, subclasses, javascriptKey, localhost, Parse, port = 1337 } = config;
     Vue.config.globalProperties.$appInfo = config;
-    const colors = config.colors || {}
+    const colors = config.colors || {};
     for (const color in colors) {
       setCssVar(color, colors[color]);
     }
@@ -31,28 +31,28 @@ export const Config = {
       const user = ParseUser.current();
       const auth = to && to.meta && to.meta.requiresAuth;
       if (!user && auth) {
-        return '/login';
+        return "/login";
       }
       if (!user) {
-        return false
+        return false;
       }
       const toFetch = [];
       if (refresh) {
         toFetch.push(user);
       }
       const checkIfFetch = (obj) => {
-        const ids = toFetch.map(_obj => _obj?.id);
+        const ids = toFetch.map((_obj) => _obj?.id);
         if (!obj || !obj.fetch || !obj.isDataAvailable || ids.includes(obj.id)) {
           return;
         }
         const token = `${obj.className}-${obj.id}`;
-        const lastGot = lastFetchQueue[token] || new Date('2010');
-        if ((new Date().getTime() - lastGot.getTime()) < 1000) {
+        const lastGot = lastFetchQueue[token] || new Date("2010");
+        if (new Date().getTime() - lastGot.getTime() < 1000) {
           return;
         }
         if (!obj.isDataAvailable(obj) || refresh) {
           toFetch.push(obj);
-          lastFetchQueue[token] = new Date()
+          lastFetchQueue[token] = new Date();
         }
       };
       checkIfFetch(user);
@@ -70,15 +70,15 @@ export const Config = {
         return false;
       }
       try {
-        await Promise.all(fetchCopy.map(obj => obj.fetch()));
+        await Promise.all(fetchCopy.map((obj) => obj.fetch()));
       } catch (e) {
-        if (e.code === 209 || e.code === 206 || e.message.includes('Please login to continue.')) {
+        if (e.code === 209 || e.code === 206 || e.message.includes("Please login to continue.")) {
           try {
             await Parse.User.logOut();
           } catch (e) {
             /* */
           }
-          return '/login';
+          return "/login";
         }
       }
       if (config.handleLoaded) {
@@ -87,7 +87,7 @@ export const Config = {
       }
     };
     const handleRoute = (destination, to, next) => {
-      if ((to.path === destination || to.name === destination) || (destination.name && destination.name === to.name)) {
+      if (to.path === destination || to.name === destination || (destination.name && destination.name === to.name)) {
         next();
         return true;
       }
@@ -96,7 +96,7 @@ export const Config = {
     };
     router.beforeEach(async (to, from, next) => {
       try {
-        if (to.fullPath === '/' && from.fullPath === '/' && config.hasLanding) {
+        if (to.fullPath === "/" && from.fullPath === "/" && config.hasLanding) {
           next();
           Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
           return;
@@ -108,7 +108,7 @@ export const Config = {
           next();
           return;
         }
-        handleRoute(route.charAt(0) === '/' ? route : {name: route}, to, next);
+        handleRoute(route.charAt(0) === "/" ? route : { name: route }, to, next);
       } catch (e) {
         next();
         Loading.hide();
@@ -124,6 +124,23 @@ export const Config = {
         [a[i], a[j]] = [a[j], a[i]];
       }
       return a;
+    };
+
+    Parse.Query.prototype._subscribe = Parse.Query.prototype.subscribe;
+    Parse.Query.prototype.subscribe = async function (...args) {
+      const result = await this._subscribe(...args);
+      window.addEventListener("online", async () => {
+        const updated = await this.find();
+        for (const obj of updated) {
+          result._events.update?.call(this, obj, obj);
+        }
+        result.online = true;
+      });
+      window.addEventListener("offline", async () => {
+        result.online = false;
+      });
+      result.online = !!navigator.onLine;
+      return result;
     };
   },
 };
