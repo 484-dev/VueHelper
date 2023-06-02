@@ -129,17 +129,19 @@ export const Config = {
     Parse.Query.prototype._subscribe = Parse.Query.prototype.subscribe;
     Parse.Query.prototype.subscribe = async function (...args) {
       const result = await this._subscribe(...args);
-      window.addEventListener("online", async () => {
+      const opened = async () => {
+        result._events.connection?.call(this, true);
         const updated = await this.find();
         for (const obj of updated) {
           result._events.update?.call(this, obj, obj);
         }
-        result.online = true;
-      });
+      }
+      window.addEventListener("online", opened);
       window.addEventListener("offline", async () => {
-        result.online = false;
+        result._events.connection?.call(this, false);
       });
-      result.online = !!navigator.onLine;
+      result.on('open', opened);
+      result.on('error', () => result._events.connection?.call(this, false));
       return result;
     };
   },
