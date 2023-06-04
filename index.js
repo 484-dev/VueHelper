@@ -130,18 +130,22 @@ export const Config = {
     Parse.Query.prototype.subscribe = async function (...args) {
       const result = await this._subscribe(...args);
       const opened = async () => {
-        result._events.connection?.call(this, true);
-        const updated = await this.find();
-        for (const obj of updated) {
-          result._events.update?.call(this, obj, obj);
+        try {
+          result._events.connection?.call?.(this, true);
+          const updated = await this.find();
+          for (const obj of updated) {
+            result._events.update?.call(this, obj, obj);
+          }
+        } catch (e) {
+          console.log("Open event failed: ", e);
         }
-      }
+      };
       window.addEventListener("online", opened);
       window.addEventListener("offline", async () => {
         result._events.connection?.call(this, false);
       });
-      result.on('open', opened);
-      result.on('error', () => result._events.connection?.call(this, false));
+      result.on("open", opened);
+      result.on("error", () => result._events.connection?.call(this, false));
       return result;
     };
   },
