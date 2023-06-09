@@ -1,4 +1,5 @@
-import * as deepcopy from 'deepcopy';
+import * as func from 'deepcopy';
+const deepcopy = func.default || func;
 const nestedHandler = {
   updateParent(key, value) {
     const levels = this._path.split(".");
