@@ -14,11 +14,12 @@ const makeId = (length = 8) => {
 const messages = {};
 let isChanging = false;
 export default {
-  $validateFields(...fields) {
+  async $validateFields(...fields) {
     if (Array.isArray(fields[0])) {
       fields = fields[0];
     }
     try {
+      await this.$nextTick();
       let allowed = true;
       if (!this.$refs) {
         throw new Error("Please set refs.");
