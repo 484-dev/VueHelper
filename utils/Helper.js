@@ -183,7 +183,6 @@ export default {
     if (navigator.geolocation) {
       const getPosition = async () => {
         let position = await Promise.race([new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject)), new Promise((resolve) => setTimeout(resolve, 5000))]);
-        console.log({ position });
         if (position) {
           const { latitude, longitude } = position.coords;
           return new Parse.GeoPoint({ latitude, longitude });
@@ -215,20 +214,20 @@ export default {
           const input = document.createElement("input");
           input.type = "file";
           input.accept = ".png, .jpg, .jpeg";
-          input.onclick = () => {
-            document.body.onfocus = () => {
-              setTimeout(checkOnCancel, 500);
-            };
-          };
-
-          const checkOnCancel = () => {
+          const timeout = setTimeout(() => {
+            reject('No file selected.');
+          }, 60000);
+          const submitted = () => {
             if (input.value.length === 0) {
               reject("No file selected.");
               return;
             }
             resolve(input.files[0]);
+            clearTimeout(timeout);
             document.body.onfocus = null;
           };
+          input.addEventListener('change', submitted);
+          document.body.onfocus = submitted;
           input.click();
         } else {
           navigator.camera.getPicture(
@@ -264,11 +263,16 @@ export default {
         }
       });
     };
+    let file;
     try {
-      this.$q.loading.show();
-      const file = await getImg();
+      file = await getImg();
+    } catch {
+      throw 'Could not get picture';
+    }
+    try {
       let type = file.type;
       type = type.split("/").pop();
+      this.$q.loading.show();
       const decodedImage = await imageCompression.getDataUrlFromFile(file);
       this.$q.loading.hide();
       return { base64: decodedImage, type };
