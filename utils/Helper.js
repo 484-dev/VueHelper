@@ -182,6 +182,7 @@ export default {
     });
     if (navigator.geolocation) {
       const getPosition = async () => {
+        console.log('getting position');
         navigator.geolocation.getCurrentPosition(
           function () {},
           function () {},
@@ -196,13 +197,9 @@ export default {
       try {
         await getPosition();
       } catch (e) {
+        console.log(e);
         if (e.PERMISSION_DENIED) {
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            return await getPosition();
-          } catch (e) {
-            throw new Error(`Could not determine location - location permission has been denied. Please check the app's settings`);
-          }
+          throw new Error(`Could not determine location - location permission has been denied. Please check the app's settings`);
         }
         throw e;
       }
