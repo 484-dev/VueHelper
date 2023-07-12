@@ -183,11 +183,9 @@ export default {
     if (navigator.geolocation) {
       const getPosition = async () => {
         navigator.geolocation.getCurrentPosition(
-          function (...res) {
-            console.log(res)
+          function () {
           },
-          function (...err) {
-            console.log(err)
+          function () {
           },
           {}
         );
