@@ -182,7 +182,12 @@ export default {
     });
     if (navigator.geolocation) {
       const getPosition = async () => {
-        let position = await Promise.race([new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject)), new Promise((resolve) => setTimeout(resolve, 5000))]);
+        navigator.geolocation.getCurrentPosition(
+          function () {},
+          function () {},
+          {}
+        );
+        let position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { maximumAge: 10000, timeout: 5000, enableHighAccuracy: true }));
         if (position) {
           const { latitude, longitude } = position.coords;
           return new Parse.GeoPoint({ latitude, longitude });
@@ -215,7 +220,7 @@ export default {
           input.type = "file";
           input.accept = ".png, .jpg, .jpeg";
           const timeout = setTimeout(() => {
-            reject('No file selected.');
+            reject("No file selected.");
           }, 60000);
           const submitted = () => {
             if (input.files.length === 0) {
@@ -225,7 +230,7 @@ export default {
             resolve(input.files[0]);
             clearTimeout(timeout);
           };
-          input.addEventListener('change', submitted);
+          input.addEventListener("change", submitted);
           input.click();
         } else {
           navigator.camera.getPicture(
@@ -265,7 +270,7 @@ export default {
     try {
       file = await getImg();
     } catch (e) {
-      throw 'Could not get picture';
+      throw "Could not get picture";
     }
     try {
       let type = file.type;
