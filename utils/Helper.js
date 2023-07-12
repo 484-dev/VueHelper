@@ -184,11 +184,17 @@ export default {
       const getPosition = async () => {
         console.log('getting position');
         navigator.geolocation.getCurrentPosition(
-          function () {},
-          function () {},
+          function (...res) {
+            console.log(res)
+          },
+          function (...err) {
+            console.log(err)
+          },
           {}
         );
+        console.log('calling');
         let position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { maximumAge: 10000, timeout: 5000, enableHighAccuracy: true }));
+        console.log({position});
         if (position) {
           const { latitude, longitude } = position.coords;
           return new Parse.GeoPoint({ latitude, longitude });
