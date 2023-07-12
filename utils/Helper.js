@@ -182,7 +182,6 @@ export default {
     });
     if (navigator.geolocation) {
       const getPosition = async () => {
-        console.log('getting position');
         navigator.geolocation.getCurrentPosition(
           function (...res) {
             console.log(res)
@@ -192,16 +191,14 @@ export default {
           },
           {}
         );
-        console.log('calling');
-        let position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { maximumAge: 10000, timeout: 5000, enableHighAccuracy: true }));
-        console.log({position});
+        const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { maximumAge: 10000, timeout: 5000, enableHighAccuracy: true }));
         if (position) {
           const { latitude, longitude } = position.coords;
           return new Parse.GeoPoint({ latitude, longitude });
         }
       };
       try {
-        await getPosition();
+        return await getPosition();
       } catch (e) {
         console.log(e);
         if (e.PERMISSION_DENIED) {
