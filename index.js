@@ -132,7 +132,11 @@ export const Config = {
       const opened = async () => {
         try {
           result._events.connection?.call?.(this, true);
-          const updated = await this.find();
+          let arg = null;
+          if (args[0]?.context) {
+            arg = args[0];
+          }
+          const updated = await this.find(arg);
           for (const obj of updated) {
             result._events.update?.call(this, obj, obj);
           }
