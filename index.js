@@ -128,14 +128,15 @@ export const Config = {
 
     Parse.Query.prototype._subscribe = Parse.Query.prototype.subscribe;
     Parse.Query.prototype.subscribe = async function (...args) {
+      let arg = null;
+      if (args[0]?.context) {
+        arg = args[0];
+        args[0] = null;
+      }
       const result = await this._subscribe(...args);
       const opened = async () => {
         try {
           result._events.connection?.call?.(this, true);
-          let arg = null;
-          if (args[0]?.context) {
-            arg = args[0];
-          }
           const updated = await this.find(arg);
           for (const obj of updated) {
             result._events.update?.call(this, obj, obj);
