@@ -134,8 +134,12 @@ export const Config = {
         args[0] = null;
       }
       const result = await this._subscribe(...args);
+      let reopen = true;
       const opened = async () => {
         try {
+          if (!reopen) {
+            return;
+          }
           result._events.connection?.call?.(this, true);
           const updated = await this.find(arg);
           for (const obj of updated) {
@@ -150,6 +154,7 @@ export const Config = {
         result._events.connection?.call(this, false);
       });
       result.on("open", opened);
+      result.on("close", () => reopen = false);
       result.on("error", () => result._events.connection?.call(this, false));
       return result;
     };
