@@ -135,26 +135,32 @@ export const Config = {
       }
       const result = await this._subscribe(...args);
       let reopen = true;
-      const opened = async () => {
+      const that = this;
+      async function opened () {
         try {
           if (!reopen) {
             return;
           }
-          result._events.connection?.call?.(this, true);
-          const updated = await this.find(arg);
+          result._events.connection?.call?.(that, true);
+          const updated = await that.find(arg);
           for (const obj of updated) {
-            result._events.update?.call(this, obj, obj);
+            result._events.update?.call(that, obj, obj);
           }
         } catch (e) {
           console.log("Open event failed: ", e);
         }
       };
+      function offline () {
+        result._events.connection?.call(that, false);
+      }
       window.addEventListener("online", opened);
-      window.addEventListener("offline", async () => {
-        result._events.connection?.call(this, false);
-      });
+      window.addEventListener("offline", offline);
       result.on("open", opened);
-      result.on("close", () => reopen = false);
+      result.on("close", () => {
+        reopen = false;
+        window.removeEventListener('online', opened);
+        window.removeEventListener('offline', offline);
+      });
       result.on("error", () => result._events.connection?.call(this, false));
       return result;
     };
