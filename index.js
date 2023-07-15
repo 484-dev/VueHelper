@@ -155,7 +155,6 @@ export const Config = {
       }
       window.addEventListener("online", opened);
       window.addEventListener("offline", offline);
-      result.on("open", opened);
       result.on("close", () => {
         reopen = false;
         window.removeEventListener('online', opened);
