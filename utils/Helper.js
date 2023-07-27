@@ -1,7 +1,7 @@
 import ParseVueObject from "./ParseVueSubclass";
 import imageCompression from "browser-image-compression";
 import sanitizeHtml from "sanitize-html";
-import { Platform, copyToClipboard, date } from "quasar";
+import { Platform, copyToClipboard, date, openURL } from "quasar";
 import Parse from "parse";
 const makeId = (length = 8) => {
   let result = "";
@@ -386,6 +386,9 @@ export default {
   },
   $formatDate(...args) {
     return date.formatDate(...args);
+  },
+  $openURL(...args) {
+    return openURL(...args);
   },
   $extractDate(...args) {
     return date.extractDate(...args);
