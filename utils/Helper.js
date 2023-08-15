@@ -105,7 +105,7 @@ export default {
       this.$q.loading.show();
     }
     try {
-      const result = await Promise.resolve(promise);
+      const result = await Promise.race([Promise.resolve(promise), new Promise((_,reject) => setTimeout(() => reject(new Parse.Error(100, "")), 10 * 1000))]);
       if (!silent) {
         this.$q.loading.hide();
       }

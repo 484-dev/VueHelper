@@ -60,17 +60,12 @@ export const Config = {
         const val = user.get(key);
         checkIfFetch(val);
       }
-      const fetchCopy = [];
-      for (const item of toFetch) {
-        if (item) {
-          fetchCopy.push(item);
-        }
-      }
+      const fetchCopy = toFetch.filter(obj => obj);
       if (fetchCopy.length == 0) {
         return false;
       }
       try {
-        await Promise.all(fetchCopy.map((obj) => obj.fetch()));
+        await Promise.race([Promise.all(fetchCopy.map((obj) => obj.fetch())), new Promise((_,reject) => setTimeout(() => reject(new Parse.Error(100, "")), 10 * 1000))]);
       } catch (e) {
         if (e.code === 209 || e.code === 206 || e.message.includes("Please login to continue.")) {
           try {
