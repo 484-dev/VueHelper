@@ -89,22 +89,23 @@ export const Config = {
       next(destination);
       return true;
     };
+    let hasRouted = false;
     router.beforeEach(async (to, from, next) => {
       const loading = config.loading || Loading;
       try {
-        if (to.fullPath === "/" && from.fullPath === "/" && config.hasLanding) {
-          next();
-          Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
+        if (!hasRouted) {
+          hasRouted = true;
+          loading.show();
+          const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
+          loading.hide();
+          if (route === false) {
+            next();
+            return;
+          }
+          handleRoute(route.charAt(0) === "/" ? route : { name: route }, to, next);
           return;
         }
-        loading.show();
-        const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
-        loading.hide();
-        if (route === false) {
-          next();
-          return;
-        }
-        handleRoute(route.charAt(0) === "/" ? route : { name: route }, to, next);
+        next();
       } catch (e) {
         next();
         loading.hide();
