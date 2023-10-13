@@ -101,15 +101,16 @@ export default {
     if (!promise) {
       throw new Error("Please pass a promise.");
     }
+
     if (!silent) {
-      this.$q.loading.show();
+      if (this.loadingState !== undefined) {
+        this.loadingState = true;
+      } else {
+        this.$q.loading.show();
+      }
     }
     try {
-      const result = await Promise.race([Promise.resolve(promise), new Promise((_,reject) => setTimeout(() => reject(new Parse.Error(100, "")), 10 * 1000))]);
-      if (!silent) {
-        this.$q.loading.hide();
-      }
-      return result;
+      return await Promise.race([Promise.resolve(promise), new Promise((_,reject) => setTimeout(() => reject(new Parse.Error(100, "")), 10 * 1000))]);
     } catch (e) {
       if (e.code === 100) {
         e.message = e.message === "Too many requests" ? e.message : `Could not connect to the server. Please check your internet connect or try again later.`;
@@ -137,10 +138,15 @@ export default {
         };
         await logout();
       }
+      this.$showError(e);
+    }
+    finally {
+      if (this.loadingState) {
+        this.loadingState = false;
+      }
       if (!silent) {
         this.$q.loading.hide();
       }
-      this.$showError(e);
     }
   },
   $random(maximum, minimum) {

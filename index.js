@@ -90,15 +90,16 @@ export const Config = {
       return true;
     };
     router.beforeEach(async (to, from, next) => {
+      const loading = config.loading || Loading;
       try {
         if (to.fullPath === "/" && from.fullPath === "/" && config.hasLanding) {
           next();
           Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
           return;
         }
-        Loading.show();
+        loading.show();
         const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
-        Loading.hide();
+        loading.hide();
         if (route === false) {
           next();
           return;
@@ -106,7 +107,7 @@ export const Config = {
         handleRoute(route.charAt(0) === "/" ? route : { name: route }, to, next);
       } catch (e) {
         next();
-        Loading.hide();
+        loading.hide();
       }
     });
     Array.prototype.getRandom = function () {
