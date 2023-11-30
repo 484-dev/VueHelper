@@ -15,11 +15,13 @@ export const Config = {
     if (javascriptKey) {
       Parse.initialize(appId, javascriptKey);
     }
-    Parse.User.allowCustomUserClass(true);
-    for (const sub of subclasses) {
-      Parse.Object.registerSubclass(sub, ParseVueObject);
+    if (subclasses) {
+      Parse.User.allowCustomUserClass(true);
+      for (const sub of subclasses) {
+        Parse.Object.registerSubclass(sub, ParseVueObject);
+      }
+      Parse.Object.registerSubclass("_User", ParseUser);
     }
-    Parse.Object.registerSubclass("_User", ParseUser);
     Object.assign(Vue.config.globalProperties, Helper);
     Parse.User = ParseUser;
     Vue.config.globalProperties.$ParseUser = ParseUser;
