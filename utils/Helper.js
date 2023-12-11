@@ -18,6 +18,9 @@ export default {
     if (Array.isArray(fields[0])) {
       fields = fields[0];
     }
+    if (!fields.length) {
+      fields = Object.keys(this.$refs);
+    }
     try {
       await this.$nextTick();
       let allowed = true;
@@ -28,6 +31,9 @@ export default {
         const fd = this.$refs[field];
         if (!fd) {
           throw new Error(`this.$refs ${field} is not defined.`);
+        }
+        if (!fd?.validate) {
+          continue;
         }
         fd.validate();
         if (allowed && fd.hasError) {
