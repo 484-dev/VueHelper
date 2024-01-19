@@ -133,7 +133,7 @@ export default {
         }
         return;
       }
-      if (e.code === 206 || e.code === 209) {
+      if (e.code === 206 || e.code === 209 || e.message?.includes("Please login to continue")) {
         const logout = async () => {
           try {
             await Parse.User.logOut();
@@ -143,6 +143,7 @@ export default {
           location.reload();
         };
         await logout();
+        return;
       }
       this.$showError(e);
     }
