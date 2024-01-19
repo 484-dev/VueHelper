@@ -33,9 +33,11 @@ export const Config = {
       const user = ParseUser.current();
       const auth = to && to.meta && to.meta.requiresAuth;
       if (!user && auth) {
+        config.handleLoaded(Parse, to);
         return "/login";
       }
       if (!user) {
+        config.handleLoaded(Parse, to);
         return false;
       }
       const toFetch = [];
