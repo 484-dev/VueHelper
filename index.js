@@ -85,36 +85,6 @@ export const Config = {
         return name;
       }
     };
-    const handleRoute = (destination, to, next) => {
-      if (to.path === destination || to.name === destination || (destination.name && destination.name === to.name)) {
-        next();
-        return true;
-      }
-      next(destination);
-      return true;
-    };
-    let hasRouted = false;
-    router.beforeEach(async (to, from, next) => {
-      const loading = config.loading || Loading;
-      try {
-        if (!hasRouted) {
-          hasRouted = true;
-          loading.show();
-          const route = await Vue.config.globalProperties.$fetchIfNeeded(from.path === "/", to);
-          loading.hide();
-          if (route === false) {
-            next();
-            return;
-          }
-          handleRoute(route.charAt(0) === "/" ? route : { name: route }, to, next);
-          return;
-        }
-        next();
-      } catch (e) {
-        next();
-        loading.hide();
-      }
-    });
     Array.prototype.getRandom = function () {
       return this[Math.floor(Math.random() * this.length)];
     };
