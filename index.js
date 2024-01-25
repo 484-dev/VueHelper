@@ -15,7 +15,7 @@ export const Config = {
     if (javascriptKey) {
       Parse.initialize(appId, javascriptKey);
     }
-    if (subclasses) {
+    if (subclasses?.length) {
       Parse.User.allowCustomUserClass(true);
       for (const sub of subclasses) {
         Parse.Object.registerSubclass(sub, ParseVueObject);
